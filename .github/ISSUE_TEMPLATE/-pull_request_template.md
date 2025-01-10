@@ -1,9 +1,9 @@
 ---
-name: Pull Request
+name: " pull_request_template"
 about: PR 템플릿
 title: ''
 labels: ''
-assignees: tkdwls4453
+assignees: ''
 
 ---
 
