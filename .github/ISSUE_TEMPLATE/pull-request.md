@@ -3,7 +3,7 @@ name: Pull Request
 about: PR 템플릿
 title: ''
 labels: ''
-assignees: ''
+assignees: tkdwls4453
 
 ---
 
