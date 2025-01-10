@@ -1,6 +1,6 @@
 ---
-name: Issue Template
-about: Issue Template
+name: "Issue : \U0001F680 Feature"
+about: " Featrue 작업 사항을 입력해주세요."
 title: ''
 labels: ''
 assignees: ''
