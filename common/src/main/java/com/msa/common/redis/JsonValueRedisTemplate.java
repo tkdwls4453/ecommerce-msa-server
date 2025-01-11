@@ -6,26 +6,21 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Optional;
 
-public class JsonValueRedisTemplate<T> {
+public class JsonValueRedisTemplate {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper mapper = new ObjectMapper();
-    private final Class<T> clazz;
 
-    public JsonValueRedisTemplate(
-            RedisTemplate <String, String> redisTemplate,
-            Class<T> clazz
-    ) {
+    public JsonValueRedisTemplate(RedisTemplate <String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
-        this.clazz = clazz;
     }
 
-    public void set(String key, T value) throws JsonProcessingException {
+    public <T> void set(String key, T value) throws JsonProcessingException {
         String stringValue = mapper.writeValueAsString(value);
         redisTemplate.opsForValue().set(key, stringValue);
     }
 
-    public Optional<T> get(String key) throws JsonProcessingException {
+    public <T> Optional<T> get(String key, Class<T> clazz) throws JsonProcessingException {
         String stringValue = redisTemplate.opsForValue().get(key);
         return Optional.ofNullable(mapper.readValue(stringValue, clazz));
     }
