@@ -13,28 +13,22 @@ import java.util.stream.Collectors;
 public class HashRedisTemplate {
 
     private final HashOperations<String, String, Object> hashOps;
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper mapper;
 
-    public HashRedisTemplate(RedisTemplate<String, String> redisTemplate, ObjectMapper objectMapper) {
+    public HashRedisTemplate(RedisTemplate<String, String> redisTemplate, ObjectMapper mapper) {
         this.hashOps = redisTemplate.opsForHash();
-        this.objectMapper = objectMapper;
+        this.mapper = mapper;
     }
 
     public <T> void putAll(String key, T value) {
         try {
-            Map<String, Object> map = objectMapper.convertValue(value,
+            Map<String, Object> map = mapper.convertValue(value,
                     new TypeReference<Map<String, Object>>() {});
 
             Map<String, String> jsonMap = map.entrySet().stream()
                     .collect(Collectors.toMap(
                             Map.Entry::getKey,
-                            e -> {
-                                try {
-                                    return objectMapper.writeValueAsString(e.getValue());
-                                } catch (JsonProcessingException ex) {
-                                    throw new RuntimeException(ex);
-                                }
-                            }
+                            e -> valueToString(e.getValue())
                     ));
 
             hashOps.putAll(key, jsonMap);
@@ -44,21 +38,13 @@ public class HashRedisTemplate {
     }
 
     public <T> void put(String key, String field, T value) {
-        try{
-            String jsonValue = objectMapper.writeValueAsString(value);
-            hashOps.put(key, field, jsonValue);
-        }catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        String jsonValue = valueToString(value);
+        hashOps.put(key, field, jsonValue);
     }
 
     public <T> void putIfAbsent(String key, String field, T value) {
-        try{
-            String jsonValue = objectMapper.writeValueAsString(value);
-            Boolean result = hashOps.putIfAbsent(key, field, jsonValue);
-        }catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        String jsonValue = valueToString(value);
+        hashOps.putIfAbsent(key, field, jsonValue);
     }
 
     public <T> Optional<T> get(String key, String field, Class<T> clazz) {
@@ -67,14 +53,7 @@ public class HashRedisTemplate {
             return Optional.empty();
         }
 
-        try {
-            if (value instanceof String) {
-                return Optional.of(objectMapper.readValue((String) value, clazz));
-            }
-            return Optional.of(objectMapper.convertValue(value, clazz));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return Optional.of(stringToValue((String) value, clazz));
     }
 
     public <T> Optional<T> get(String key, Class<T> clazz) {
@@ -95,7 +74,7 @@ public class HashRedisTemplate {
                 try {
                     Field field = clazz.getDeclaredField(fieldName);
                     field.setAccessible(true);
-                    Object fieldValue = objectMapper.readValue(jsonValue, field.getType());
+                    Object fieldValue = mapper.readValue(jsonValue, field.getType());
                     field.set(instance, fieldValue);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -127,30 +106,7 @@ public class HashRedisTemplate {
     public <T> Map<String, T> entries(String key, Class<T> clazz) {
         Map<String, Object> entries = hashOps.entries(key);
         Map<String, T> result = new HashMap<>();
-
-        entries.forEach((field, value) -> {
-            try {
-                if (value instanceof String) {
-                    try {
-                        result.put(field, objectMapper.readValue((String) value, clazz));
-                    } catch (JsonProcessingException e) {
-                        if (clazz == String.class) {
-                            @SuppressWarnings("unchecked")
-                            T stringValue = (T) value;
-                            result.put(field, stringValue);
-                        } else {
-                            result.put(field, objectMapper.convertValue(value, clazz));
-                        }
-                    }
-                } else {
-                    result.put(field, objectMapper.convertValue(value, clazz));
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-
+        entries.forEach((field, value) -> result.put(field, stringToValue((String) value, clazz)));
         return result;
     }
 
@@ -161,21 +117,28 @@ public class HashRedisTemplate {
     public <T> List<T> values(String key, Class<T> clazz) {
         List<Object> values = hashOps.values(key);
         return values.stream()
-                .map(value -> {
-                    if (value instanceof String) {
-                        try {
-                            return objectMapper.readValue((String) value, clazz);
-                        } catch (JsonProcessingException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    return objectMapper.convertValue(value, clazz);
-                })
+                .map(value -> stringToValue((String) value, clazz))
                 .collect(Collectors.toList());
     }
 
     public Long size(String key) {
         return hashOps.size(key);
+    }
+
+    private <T> String valueToString(T value) {
+        try {
+            return mapper.writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private <T> T stringToValue(String stringValue, Class<T> clazz) {
+        try {
+            return mapper.readValue(stringValue, clazz);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
