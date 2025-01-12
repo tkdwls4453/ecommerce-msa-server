@@ -49,11 +49,7 @@ public class HashRedisTemplate {
 
     public <T> Optional<T> get(String key, String field, Class<T> clazz) {
         Object value = hashOps.get(key, field);
-        if (value == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(stringToValue((String) value, clazz));
+        return Optional.ofNullable(stringToValue((String) value, clazz));
     }
 
     public <T> Optional<T> get(String key, Class<T> clazz) {
@@ -100,7 +96,7 @@ public class HashRedisTemplate {
     }
 
     public Long increment(String key, String field) {
-        return hashOps.increment(key, field, 1);
+        return increment(key, field, 1);
     }
 
     public <T> Map<String, T> entries(String key, Class<T> clazz) {
