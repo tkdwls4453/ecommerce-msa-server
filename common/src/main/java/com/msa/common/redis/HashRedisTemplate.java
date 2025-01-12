@@ -56,7 +56,6 @@ public class HashRedisTemplate {
         try{
             String jsonValue = objectMapper.writeValueAsString(value);
             Boolean result = hashOps.putIfAbsent(key, field, jsonValue);
-            System.out.println(result);
         }catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
