@@ -1,6 +1,8 @@
 package com.msa.user.application.port.in;
 
+import com.msa.user.domain.User;
+
 public interface UserRegisterUseCase {
 
-    void register(UserRegisterCommand userRegisterCommand);
+    User register(UserRegisterCommand userRegisterCommand);
 }
