@@ -2,6 +2,7 @@ package com.msa.user.adapter.in.web;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -11,6 +12,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msa.user.adapter.in.web.dto.request.UserRegisterRequest;
 import com.msa.user.application.port.in.UserRegisterCommand;
 import com.msa.user.application.port.in.UserRegisterUseCase;
+import com.msa.user.application.port.out.UserRegisterPort;
+import com.msa.user.config.SecurityConfig;
+import com.msa.user.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -34,6 +38,9 @@ class UserRegisterControllerTest {
     @MockitoBean
     private UserRegisterUseCase userRegisterUseCase;
 
+    @MockitoBean
+    private UserRegisterPort userRegisterPort;
+
     @Nested
     @DisplayName("POST /auth/register")
     class Register{
@@ -53,14 +60,15 @@ class UserRegisterControllerTest {
 
             String body = objectMapper.writeValueAsString(request);
 
-            willDoNothing().given(userRegisterUseCase)
-                .register(any(UserRegisterCommand.class));
+            when(userRegisterUseCase.register(any(UserRegisterCommand.class)))
+                .thenReturn(any(User.class));
 
             // When Then
             mockMvc.perform(
                     post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
+                        .with(csrf())
                 )
                 .andDo(print())
                 .andExpect(
@@ -90,9 +98,6 @@ class UserRegisterControllerTest {
                 .build();
 
             String body = objectMapper.writeValueAsString(request);
-
-            willDoNothing().given(userRegisterUseCase)
-                .register(any(UserRegisterCommand.class));
 
             // When Then
             mockMvc.perform(
