@@ -13,7 +13,6 @@ import com.msa.user.adapter.in.web.dto.request.UserRegisterRequest;
 import com.msa.user.application.port.in.UserRegisterCommand;
 import com.msa.user.application.port.in.UserRegisterUseCase;
 import com.msa.user.application.port.out.UserRegisterPort;
-import com.msa.user.config.SecurityConfig;
 import com.msa.user.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
