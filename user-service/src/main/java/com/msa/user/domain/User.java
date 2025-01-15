@@ -11,11 +11,10 @@ public class User {
     private String email;
 
     @Builder
-    private User(String name, String password, String email) {
+    private User(Long userId, String name, String password, String email) {
+        this.userId = userId;
         this.name = name;
         this.password = password;
         this.email = email;
     }
-
-
 }
