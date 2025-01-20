@@ -2,6 +2,7 @@ package com.msa.common.redis;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.msa.common.exception.RedisParsingException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
@@ -100,7 +101,7 @@ public class JsonValueRedisTemplate {
         try {
             return mapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RedisParsingException(e);
         }
     }
 
@@ -108,7 +109,7 @@ public class JsonValueRedisTemplate {
         try {
             return mapper.readValue(stringValue, clazz);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RedisParsingException(e, stringValue, clazz);
         }
     }
 }
