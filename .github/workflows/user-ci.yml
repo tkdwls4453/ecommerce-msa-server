@@ -2,7 +2,7 @@ name: USER CI - Test Coverage 검증
 
 on:
   pull_request:
-    branches: [ "develop/user" ]
+    branches: [ "user-develop" ]
 
 jobs:
   build:
