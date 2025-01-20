@@ -21,4 +21,9 @@ public class UserPersistenceAdapter implements UserRegisterPort {
 
         return savedEntity.toDomain();
     }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        return userJpaRepository.existsByEmail(email);
+    }
 }
