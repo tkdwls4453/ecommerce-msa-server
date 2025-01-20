@@ -11,6 +11,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./user-service
+
     steps:
       - name: Checkout to current repository
         uses: actions/checkout@v4
@@ -33,13 +37,11 @@ jobs:
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.java-home }}
         run: ./gradlew clean test jacocoTestReport
-        continue-on-error: true
 
       - name: Verify test coverage
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.java-home }}
         run: ./gradlew jacocoTestCoverageVerification
-        continue-on-error: true
 
       - name: Report test Coverage to PR
         uses: madrapps/jacoco-report@v1.6.1

@@ -61,7 +61,7 @@ tasks.named('test') {
 }
 
 jacoco {
-    toolVersion = '0.8.8'
+    toolVersion = '0.8.12'
 }
 
 jacocoTestReport {
@@ -74,7 +74,7 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, excludes: [
-                    '**/CicdPracticeApplication.class'
+                    '**/UserServiceApplication.class'
             ])
         }))
     }
@@ -90,7 +90,7 @@ jacocoTestCoverageVerification {
                 minimum = 0.80
             }
             excludes = [
-                    '**/CicdPracticeApplication.class'
+                    '**/UserServiceApplication.class'
             ]
         }
     }
