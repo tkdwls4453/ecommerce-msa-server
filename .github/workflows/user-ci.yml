@@ -31,17 +31,17 @@ jobs:
           cache-write-only: true
 
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: chmod +x ../gradlew
 
       - name: Run clean tests and generate coverage report
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.java-home }}
-        run: ./gradlew clean test jacocoTestReport
+        run: ../gradlew :user-service:clean test jacocoTestReport
 
       - name: Verify test coverage
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.java-home }}
-        run: ./gradlew jacocoTestCoverageVerification
+        run: ../gradlew jacocoTestCoverageVerification
 
       - name: Report test Coverage to PR
         uses: madrapps/jacoco-report@v1.6.1
