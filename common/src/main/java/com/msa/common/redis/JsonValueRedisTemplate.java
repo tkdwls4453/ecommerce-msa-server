@@ -5,15 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class JsonValueRedisTemplate {
 
     private final ValueOperations<String, String> valueOps;
     private final ObjectMapper mapper;
 
-    public JsonValueRedisTemplate(RedisTemplate <String, String> redisTemplate, ObjectMapper objectMapper) {
+    public JsonValueRedisTemplate(RedisTemplate<String, String> redisTemplate, ObjectMapper objectMapper) {
         this.valueOps = redisTemplate.opsForValue();
         this.mapper = objectMapper;
     }
@@ -36,7 +37,7 @@ public class JsonValueRedisTemplate {
     }
 
     public void increment(String key, long amount) {
-        valueOps.increment(key,amount);
+        valueOps.increment(key, amount);
     }
 
     public void decrement(String key) {
@@ -51,20 +52,48 @@ public class JsonValueRedisTemplate {
         return valueOps.getOperations().delete(key);
     }
 
-    public <T> T getAndSet(String key, T newValue, Class<T> clazz) {
+    public <T> Optional<T> getAndSet(String key, T newValue, Class<T> clazz) {
         String stringValue = valueToString(newValue);
         String oldValue = valueOps.getAndSet(key, stringValue);
-        return stringToValue(oldValue,clazz);
+        return Optional.ofNullable(stringToValue(oldValue, clazz));
     }
 
-    public <T> boolean setIfAbsent(String key, T value, Class<T> clazz) {
+    public <T> boolean setIfAbsent(String key, T value) {
         String stringValue = valueToString(value);
         return valueOps.setIfAbsent(key, stringValue);
     }
 
-    public <T> boolean setIfAbsent(String key, T value, Class<T> clazz, long time, TimeUnit timeUnit) {
+    public <T> boolean setIfAbsent(String key, T value, long time, TimeUnit timeUnit) {
         String stringValue = valueToString(value);
         return valueOps.setIfAbsent(key, stringValue, time, timeUnit);
+    }
+
+    public <T> void multiSet(Map<String, T> keyValueMap) {
+        valueOps.multiSet(valueToStringMap(keyValueMap));
+    }
+
+    public <T> boolean multiSetIfAbsent(Map<String, T> keyValueMap) {
+        return valueOps.multiSetIfAbsent(valueToStringMap(keyValueMap));
+    }
+
+    public <T> Optional<List<T>> multiGet(Collection<String> keys, Class<T> clazz) {
+        List<T> collect = valueOps.multiGet(keys).stream()
+                .map(e -> stringToValue(e, clazz))
+                .collect(Collectors.toList());
+
+        return Optional.of(collect);
+    }
+
+    public Long size(String key) {
+        return valueOps.size(key);
+    }
+
+    private <T> Map<String, String> valueToStringMap(Map<String, T> keyValueMap) {
+        return keyValueMap.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> valueToString(e.getValue())
+                ));
     }
 
     private <T> String valueToString(T value) {
