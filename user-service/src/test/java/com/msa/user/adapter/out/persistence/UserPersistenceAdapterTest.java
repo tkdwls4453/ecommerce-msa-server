@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import com.msa.user.domain.User;
 import com.msa.user.domain.UserFixtures;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,5 +44,29 @@ class UserPersistenceAdapterTest {
         assertThat(savedUser.getPassword()).isEqualTo(user.getPassword());
 
         verify(userJpaRepository).save(any(UserEntity.class));
+    }
+
+    @Test
+    @DisplayName("유저 조회시, 엔티티를 도메인으로 변경하여 리턴한다.")
+    void shouldConvertEntityToDomainWhenFetchingUser(){
+        // Given
+        User user = UserFixtures.user();
+        UserEntity savedUserEntity = UserFixtures.userEntity(1L, user);
+
+        when(userJpaRepository.findByEmail(user.getEmail())).thenReturn(
+            Optional.ofNullable(savedUserEntity)
+        );
+
+        // When
+        User savedUser = sut.findByEmail(user.getEmail()).orElse(null);
+
+        // Then
+        assertThat(savedUser).isNotNull();
+        assertThat(savedUser.getUserId()).isEqualTo(1L);
+        assertThat(savedUser.getName()).isEqualTo(user.getName());
+        assertThat(savedUser.getEmail()).isEqualTo(user.getEmail());
+        assertThat(savedUser.getPassword()).isEqualTo(user.getPassword());
+
+        verify(userJpaRepository).findByEmail(user.getEmail());
     }
 }
