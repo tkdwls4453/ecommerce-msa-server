@@ -9,6 +9,7 @@ import com.msa.user.application.port.in.UserRegisterCommand;
 import com.msa.user.application.port.out.UserRegisterPort;
 import com.msa.user.domain.User;
 import com.msa.user.domain.UserFixtures;
+import com.msa.user.exception.DuplicateEmailException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 /**
  * register(userRegisterCommand)
  *  - 유저 정보로 도메인을 생성한다.
+ *  - 중복 이메일 검사를 한다.
  *  - 도메인 생성 시, 패스워드를 암호화 한다.
  *  - 유저 도메인을 데이터베이스에 저장한다.
  */
@@ -51,6 +53,7 @@ class UserAuthServiceTest {
             User savedUser = UserFixtures.user(command.name(), command.email(), encryptedPassword);
 
             when(bCryptPasswordEncoder.encode(command.password())).thenReturn(encryptedPassword);
+            when(userRegisterPort.existsByEmail(any(String.class))).thenReturn(false);
             when(userRegisterPort.save(any(User.class))).thenReturn(savedUser);
 
             // When
@@ -64,6 +67,25 @@ class UserAuthServiceTest {
 
             verify(userRegisterPort).save(any(User.class));
             verify(bCryptPasswordEncoder).encode(command.password());
+        }
+
+        @Test
+        @DisplayName("중복된 이메일로 회원가입시 예외를 반환한다.")
+        void givenDuplicatedEmailWhenRegisteringThenThrowException() {
+            // Given
+            UserRegisterCommand command = UserFixtures.registerUserCommand();
+
+            String encryptedPassword = "encryptedPassword";
+            User savedUser = UserFixtures.user(command.name(), command.email(), encryptedPassword);
+
+            when(bCryptPasswordEncoder.encode(command.password())).thenReturn(encryptedPassword);
+            when(userRegisterPort.existsByEmail(any(String.class))).thenReturn(true);
+
+            // When Then
+            assertThatThrownBy(() -> {
+                sut.register(command);
+            })
+                .isInstanceOf(DuplicateEmailException.class);
         }
     }
 }
