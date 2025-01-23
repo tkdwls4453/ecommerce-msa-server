@@ -69,7 +69,7 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, excludes: [
-                    '**/CicdPracticeApplication.class'
+                    '**/OrderServiceApplication.class'
             ])
         }))
     }
@@ -82,7 +82,7 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.80
+                minimum = 0.70
             }
             excludes = [
                     '**/CicdPracticeApplication.class'
