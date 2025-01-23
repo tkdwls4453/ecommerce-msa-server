@@ -45,7 +45,7 @@ jobs:
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.java-home }}
 
-        run: ../gradlew :notification-service:jacocoTestCoverageVerification
+        run: ../gradlew jacocoTestCoverageVerification
 
         continue-on-error: true
 
