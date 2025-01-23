@@ -36,13 +36,17 @@ jobs:
       - name: Run clean tests and generate coverage report
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.java-home }}
+
         run: ../gradlew :notification-service:clean test jacocoTestReport
+
         continue-on-error: true
 
       - name: Verify test coverage
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.java-home }}
+
         run: ../gradlew :notification-service:jacocoTestCoverageVerification
+
         continue-on-error: true
 
       - name: Report test Coverage to PR
