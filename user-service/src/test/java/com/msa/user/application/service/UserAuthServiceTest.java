@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.msa.user.application.port.in.UserRegisterCommand;
+import com.msa.user.application.port.out.UserReadPort;
 import com.msa.user.application.port.out.UserRegisterPort;
 import com.msa.user.domain.User;
 import com.msa.user.domain.UserFixtures;
@@ -38,6 +39,8 @@ class UserAuthServiceTest {
     @Mock
     private UserRegisterPort userRegisterPort;
 
+    @Mock
+    private UserReadPort userReadPort;
 
     @DisplayName("[service] 회원가입 로직 테스트")
     @Nested
@@ -53,7 +56,7 @@ class UserAuthServiceTest {
             User savedUser = UserFixtures.user(command.name(), command.email(), encryptedPassword);
 
             when(bCryptPasswordEncoder.encode(command.password())).thenReturn(encryptedPassword);
-            when(userRegisterPort.existsByEmail(any(String.class))).thenReturn(false);
+            when(userReadPort.existsByEmail(any(String.class))).thenReturn(false);
             when(userRegisterPort.save(any(User.class))).thenReturn(savedUser);
 
             // When
@@ -79,7 +82,7 @@ class UserAuthServiceTest {
             User savedUser = UserFixtures.user(command.name(), command.email(), encryptedPassword);
 
             when(bCryptPasswordEncoder.encode(command.password())).thenReturn(encryptedPassword);
-            when(userRegisterPort.existsByEmail(any(String.class))).thenReturn(true);
+            when(userReadPort.existsByEmail(any(String.class))).thenReturn(true);
 
             // When Then
             assertThatThrownBy(() -> {
