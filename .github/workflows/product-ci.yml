@@ -2,7 +2,7 @@ name: PRODUCT CI - Test Coverage 검증
 
 on:
   pull_request:
-    branches: [ "develop/product" ]
+    branches: [ "product-develop" ]
 
 jobs:
   build:
