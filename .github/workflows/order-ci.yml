@@ -36,7 +36,7 @@ jobs:
       - name: Run clean tests and generate coverage report
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.java-home }}
-        run: ../gradlew :user-service:clean test jacocoTestReport
+        run: ../gradlew :order-service:clean test jacocoTestReport
 
       - name: Verify test coverage
         env:
