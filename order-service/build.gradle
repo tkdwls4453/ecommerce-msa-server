@@ -82,10 +82,10 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.70
+                minimum = 0.80
             }
             excludes = [
-                    '**/CicdPracticeApplication.class'
+                    '**/OrderServiceApplication.class'
             ]
         }
     }
