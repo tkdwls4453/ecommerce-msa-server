@@ -84,9 +84,13 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
-            excludes = [
-                    '**/OrderServiceApplication.class'
-            ]
+            afterEvaluate {
+                classDirectories.setFrom(files(classDirectories.files.collect {
+                    fileTree(dir: it, exclude: [
+                            '**/OrderServiceApplication.class'
+                    ])
+                }))
+            }
         }
     }
 }
