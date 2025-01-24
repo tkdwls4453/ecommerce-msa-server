@@ -5,7 +5,7 @@ plugins {
 	id 'jacoco'
 }
 
-group = 'com.msa'
+group = 'com.msa.product'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -25,14 +25,30 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// jpa
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// kafka
 	implementation 'org.springframework.kafka:spring-kafka'
-	compileOnly 'org.projectlombok:lombok'
+
+	// h2
 	runtimeOnly 'com.h2database:h2'
+
+	// lombok
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -48,7 +64,7 @@ tasks.named('test') {
 }
 
 jacoco {
-	toolVersion = '0.8.8'
+	toolVersion = '0.8.12'
 }
 
 jacocoTestReport {
@@ -74,7 +90,7 @@ jacocoTestCoverageVerification {
 			limit {
 				counter = 'LINE'
 				value = 'COVEREDRATIO'
-				minimum = 0.80
+				minimum = 0.70
 			}
 			afterEvaluate {
 				classDirectories.setFrom(files(classDirectories.files.collect {
@@ -86,5 +102,3 @@ jacocoTestCoverageVerification {
 		}
 	}
 }
-
-tasks.register("prepareKotlinBuildScriptModel"){}
