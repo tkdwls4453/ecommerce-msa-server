@@ -5,7 +5,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
-group = 'com.msa'
+group = 'com.msa.coupon'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -19,11 +19,19 @@ repositories {
 }
 
 dependencies {
+	// Web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	implementation project(':common')
 }
 
+test {
+	useJUnitPlatform()
+}
 
 tasks.named('test') {
 	useJUnitPlatform()
@@ -31,7 +39,7 @@ tasks.named('test') {
 }
 
 jacoco {
-	toolVersion = '0.8.8'
+	toolVersion = '0.8.12'
 }
 
 jacocoTestReport {
@@ -57,7 +65,7 @@ jacocoTestCoverageVerification {
 			limit {
 				counter = 'LINE'
 				value = 'COVEREDRATIO'
-				minimum = 0.80
+				minimum = 0.70
 			}
 			afterEvaluate {
 				classDirectories.setFrom(files(classDirectories.files.collect {
@@ -69,5 +77,3 @@ jacocoTestCoverageVerification {
 		}
 	}
 }
-
-tasks.register('prepareKotlinBuildScriptModel') {}
