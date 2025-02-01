@@ -26,12 +26,7 @@ public class OrderController {
         @RequestParam Long userId,
         @RequestBody @Valid CreateNewOrderRequest request
     ){
-        Order newOrder = createNewOrderUseCase.createNewOrder(userId, CreateNewOrderCommand.builder()
-            .orderLine(request.orderLine())
-            .coupon(request.coupon())
-            .shippingInfo(request.shippingInfo())
-            .totalAmount(request.totalAmount())
-            .build());
+        Order newOrder = createNewOrderUseCase.createNewOrder(userId, CreateNewOrderCommand.from(request));
 
         return ApiResponse.success(CreatedNewOrderResponse.from(newOrder));
     }

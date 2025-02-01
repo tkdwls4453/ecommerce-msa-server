@@ -1,5 +1,6 @@
 package com.msa.order.application.port.in;
 
+import com.msa.order.adapter.in.web.dto.CreateNewOrderRequest;
 import com.msa.order.domain.vo.AppliedCoupon;
 import com.msa.order.domain.vo.OrderShoes;
 import com.msa.order.domain.vo.ShippingInfo;
@@ -14,4 +15,12 @@ public record CreateNewOrderCommand(
     Integer totalAmount
 )
 {
+    public static CreateNewOrderCommand from(CreateNewOrderRequest request){
+        return CreateNewOrderCommand.builder()
+            .orderLine(request.orderLine())
+            .coupon(request.coupon())
+            .shippingInfo(request.shippingInfo())
+            .totalAmount(request.totalAmount())
+            .build();
+    }
 }
