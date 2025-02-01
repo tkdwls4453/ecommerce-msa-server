@@ -13,7 +13,7 @@ public record CreatedNewOrderResponse(
     String orderStatus,
     List<OrderShoes> orderLine,
     ShippingInfo shippingInfo,
-    Integer totalAmount
+    Integer totalPrice
 ) {
 
     public static CreatedNewOrderResponse from(Order newOrder) {
@@ -23,7 +23,7 @@ public record CreatedNewOrderResponse(
             .orderStatus(newOrder.getOrderStatus().toString())
             .orderLine(newOrder.getOrderLine())
             .shippingInfo(newOrder.getShippingInfo())
-            .totalAmount(newOrder.getTotalAmount())
+            .totalPrice(newOrder.getTotalPrice().amount())
             .build();
     }
 }

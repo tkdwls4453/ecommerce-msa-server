@@ -2,6 +2,7 @@ package com.msa.order.domain;
 
 import com.msa.order.adapter.in.web.dto.CreateNewOrderRequest;
 import com.msa.order.domain.vo.AppliedCoupon;
+import com.msa.order.domain.vo.Money;
 import com.msa.order.domain.vo.OrderShoes;
 import com.msa.order.domain.vo.ShippingInfo;
 import java.util.List;
@@ -18,10 +19,9 @@ public class OrderFixtures {
             .orderLine(orderLine())
             .appliedCoupon(fixedCoupon())
             .shippingInfo(shippingInfo())
-            .totalAmount(calculateTotalAmount(orderLine(), fixedCoupon()))
+            .totalPrice(new Money(calculateTotalAmount(orderLine(), fixedCoupon())))
             .build();
     }
-
 
     public static CreateNewOrderRequest newOrderWithFixedCouponRequest() {
         return CreateNewOrderRequest.builder()
@@ -34,9 +34,9 @@ public class OrderFixtures {
 
     public static List<OrderShoes> orderLine(){
         return List.of(
-            new OrderShoes(1, 1L, 1L, "나이키 에어포스 화이트", "260", 1, 130_000),
-            new OrderShoes(2, 2L, 2L, "뉴발란스 2002R 그레이", "265", 2, 114_000),
-            new OrderShoes(3, 3L, 3L, "아디다스 가젤 트리플 블랙", "220", 1, 60_000)
+            new OrderShoes(1, 1L, 1L, "나이키 에어포스 화이트", "260", 1, new Money(130_000)),
+            new OrderShoes(2, 2L, 2L, "뉴발란스 2002R 그레이", "265", 2, new Money(114_000)),
+            new OrderShoes(3, 3L, 3L, "아디다스 가젤 트리플 블랙", "220", 1, new Money(60_000))
         );
     }
 
@@ -54,7 +54,7 @@ public class OrderFixtures {
 
     public static int calculateTotalAmount(List<OrderShoes> orderLine, AppliedCoupon coupon){
         int totalItemPrice = orderLine.stream()
-            .mapToInt(orderShoes -> orderShoes.price() * orderShoes.quantity())
+            .mapToInt(orderShoes -> orderShoes.price().amount() * orderShoes.quantity())
             .sum();
 
         int discountAmount = 0;

@@ -10,6 +10,6 @@ public record OrderShoes(
     String itemName,
     String itemSize,
     int quantity,
-    int price
+    Money price
 ){
 }
