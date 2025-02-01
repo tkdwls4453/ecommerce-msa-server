@@ -16,6 +16,7 @@ import com.msa.order.application.port.in.CreateNewOrderCommand;
 import com.msa.order.application.port.in.CreateNewOrderUseCase;
 import com.msa.order.domain.Order;
 import com.msa.order.domain.OrderFixtures;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -49,7 +50,8 @@ class OrderControllerTest {
         void testOrderAcceptanceReturnsOk() throws Exception {
             // Given
             CreateNewOrderRequest request = OrderFixtures.newOrderWithFixedCouponRequest();
-            Order createdOrder = OrderFixtures.order();
+            LocalDateTime orderTime = LocalDateTime.now();
+            Order createdOrder = OrderFixtures.order(orderTime);
 
             String body = objectMapper.writeValueAsString(request);
             when(createNewOrderUseCase.createNewOrder(anyLong(), any(CreateNewOrderCommand.class)))
