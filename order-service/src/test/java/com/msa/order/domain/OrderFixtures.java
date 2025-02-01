@@ -5,12 +5,13 @@ import com.msa.order.domain.vo.AppliedCoupon;
 import com.msa.order.domain.vo.Money;
 import com.msa.order.domain.vo.OrderShoes;
 import com.msa.order.domain.vo.ShippingInfo;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 public class OrderFixtures {
 
-    public static Order order(){
+    public static Order order(LocalDateTime orderTime){
         return Order.builder()
             .orderId(1L)
             .orderCode(UUID.randomUUID())
@@ -20,6 +21,30 @@ public class OrderFixtures {
             .appliedCoupon(fixedCoupon())
             .shippingInfo(shippingInfo())
             .totalPrice(new Money(calculateTotalAmount(orderLine(), fixedCoupon())))
+            .orderTime(orderTime)
+            .build();
+    }
+
+    public static Order order(OrderStatus status, LocalDateTime orderTime){
+        return Order.builder()
+            .orderId(1L)
+            .orderCode(UUID.randomUUID())
+            .customerId(1L)
+            .orderStatus(status)
+            .orderLine(orderLine())
+            .appliedCoupon(fixedCoupon())
+            .shippingInfo(shippingInfo())
+            .totalPrice(new Money(calculateTotalAmount(orderLine(), fixedCoupon())))
+            .orderTime(orderTime)
+            .build();
+    }
+
+    public static CreateNewOrderRequest newOrderWithPercentageCouponRequest() {
+        return CreateNewOrderRequest.builder()
+            .orderLine(orderLine())
+            .coupon(percentageCoupon())
+            .shippingInfo(shippingInfo())
+            .totalAmount(calculateTotalAmount(orderLine(), percentageCoupon()))
             .build();
     }
 
@@ -64,7 +89,7 @@ public class OrderFixtures {
                     discountAmount = coupon.amount();
                     break;
                 case "PERCENTAGE":
-                    discountAmount = (int)(totalItemPrice * (coupon.amount() / 100.0));
+                    discountAmount = totalItemPrice * (coupon.amount() / 100);
                     break;
             }
         }
