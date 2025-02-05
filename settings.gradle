@@ -1,4 +1,4 @@
 rootProject.name = 'ecommerce-msa-server'
 include 'common'
 include 'user-service'
-
+include 'product-service'
