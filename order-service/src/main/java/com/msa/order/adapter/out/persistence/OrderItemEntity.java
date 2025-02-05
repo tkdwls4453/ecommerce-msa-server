@@ -3,7 +3,6 @@ package com.msa.order.adapter.out.persistence;
 import com.msa.common.vo.Money;
 import com.msa.order.domain.vo.OrderItem;
 import jakarta.persistence.Embeddable;
-import java.util.function.Function;
 import lombok.Builder;
 
 @Builder

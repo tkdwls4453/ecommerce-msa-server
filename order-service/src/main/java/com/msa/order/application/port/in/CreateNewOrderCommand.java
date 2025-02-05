@@ -24,4 +24,8 @@ public record CreateNewOrderCommand(
             .totalPrice(new Money(request.totalAmount()))
             .build();
     }
+
+    public Long getCouponId(){
+        return coupon == null ? null : coupon.couponId();
+    }
 }

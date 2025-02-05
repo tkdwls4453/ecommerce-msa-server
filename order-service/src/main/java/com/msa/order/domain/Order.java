@@ -48,7 +48,7 @@ public class Order {
         return Order.builder()
             .orderCode(orderCode)
             .customerId(customerId)
-            .appliedCouponId(command.coupon() == null ? null : command.coupon().couponId())
+            .appliedCouponId(command.getCouponId())
             .shippingInfo(command.shippingInfo())
             .orderLine(command.orderLine())
             .orderStatus(OrderStatus.ORDER_RECEIVED)
