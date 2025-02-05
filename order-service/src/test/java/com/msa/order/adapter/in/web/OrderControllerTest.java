@@ -14,8 +14,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msa.order.adapter.in.web.dto.CreateNewOrderRequest;
 import com.msa.order.application.port.in.CreateNewOrderCommand;
 import com.msa.order.application.port.in.CreateNewOrderUseCase;
+import com.msa.order.application.port.out.ApplyCouponUseCase;
+import com.msa.order.application.port.out.DecreaseStockUseCase;
+import com.msa.order.application.port.out.OrderCreatePort;
 import com.msa.order.domain.Order;
 import com.msa.order.domain.OrderFixtures;
+import com.msa.order.domain.OrderStatus;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import org.junit.jupiter.api.DisplayName;
@@ -39,11 +43,18 @@ class OrderControllerTest {
     @MockitoBean
     private CreateNewOrderUseCase createNewOrderUseCase;
 
+    @MockitoBean
+    private ApplyCouponUseCase applyCouponUseCase;
+
+    @MockitoBean
+    private DecreaseStockUseCase decreaseStockUseCase;
+
+    @MockitoBean
+    private OrderCreatePort orderCreatePort;
+
     @Nested
     @DisplayName("POST /order/new")
     class AcceptOrder{
-
-        // 총 주문 금액이 음수인 경우 예외 발생
 
         @Test
         @DisplayName("정상 데이터로 주문 접수시 200 OK 를 반환한다.")
@@ -51,7 +62,7 @@ class OrderControllerTest {
             // Given
             CreateNewOrderRequest request = OrderFixtures.newOrderWithFixedCouponRequest();
             LocalDateTime orderTime = LocalDateTime.now();
-            Order createdOrder = OrderFixtures.order(orderTime);
+            Order createdOrder = OrderFixtures.order(1L, OrderStatus.PAYMENT_PENDING, orderTime);
 
             String body = objectMapper.writeValueAsString(request);
             when(createNewOrderUseCase.createNewOrder(anyLong(), any(CreateNewOrderCommand.class)))
@@ -70,7 +81,7 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.code").value("S200"))
                 .andExpect(jsonPath("$.data.orderLine").isNotEmpty())
                 .andExpect(jsonPath("$.data.orderId").value(1L))
-                .andExpect(jsonPath("$.data.orderStatus").value("ORDER_RECEIVED"));
+                .andExpect(jsonPath("$.data.orderStatus").value("PAYMENT_PENDING"));
 
             verify(createNewOrderUseCase, times(1))
                 .createNewOrder(anyLong(), any(CreateNewOrderCommand.class));
