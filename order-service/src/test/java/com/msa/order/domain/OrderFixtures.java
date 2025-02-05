@@ -2,37 +2,22 @@ package com.msa.order.domain;
 
 import com.msa.order.adapter.in.web.dto.CreateNewOrderRequest;
 import com.msa.order.domain.vo.AppliedCoupon;
-import com.msa.order.domain.vo.Money;
-import com.msa.order.domain.vo.OrderShoes;
+import com.msa.common.vo.Money;
+import com.msa.order.domain.vo.OrderItem;
 import com.msa.order.domain.vo.ShippingInfo;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 public class OrderFixtures {
-
-    public static Order order(LocalDateTime orderTime){
+    public static Order order(Long id, OrderStatus status, LocalDateTime orderTime){
         return Order.builder()
-            .orderId(1L)
-            .orderCode(UUID.randomUUID())
-            .customerId(1L)
-            .orderStatus(OrderStatus.ORDER_RECEIVED)
-            .orderLine(orderLine())
-            .appliedCoupon(fixedCoupon())
-            .shippingInfo(shippingInfo())
-            .totalPrice(new Money(calculateTotalAmount(orderLine(), fixedCoupon())))
-            .orderTime(orderTime)
-            .build();
-    }
-
-    public static Order order(OrderStatus status, LocalDateTime orderTime){
-        return Order.builder()
-            .orderId(1L)
+            .orderId(id)
             .orderCode(UUID.randomUUID())
             .customerId(1L)
             .orderStatus(status)
             .orderLine(orderLine())
-            .appliedCoupon(fixedCoupon())
+            .appliedCouponId(fixedCoupon().couponId())
             .shippingInfo(shippingInfo())
             .totalPrice(new Money(calculateTotalAmount(orderLine(), fixedCoupon())))
             .orderTime(orderTime)
@@ -57,11 +42,11 @@ public class OrderFixtures {
             .build();
     }
 
-    public static List<OrderShoes> orderLine(){
+    public static List<OrderItem> orderLine(){
         return List.of(
-            new OrderShoes(1, 1L, 1L, "나이키 에어포스 화이트", "260", 1, new Money(130_000)),
-            new OrderShoes(2, 2L, 2L, "뉴발란스 2002R 그레이", "265", 2, new Money(114_000)),
-            new OrderShoes(3, 3L, 3L, "아디다스 가젤 트리플 블랙", "220", 1, new Money(60_000))
+            new OrderItem(1, 1L, "나이키 에어포스 화이트",  1, new Money(130_000)),
+            new OrderItem(2, 2L, "뉴발란스 2002R 그레이", 2, new Money(114_000)),
+            new OrderItem(3, 3L, "아디다스 가젤 트리플 블랙", 1, new Money(60_000))
         );
     }
 
@@ -77,7 +62,7 @@ public class OrderFixtures {
         return new ShippingInfo("윤상진", "경기도 고양시 행신동 000-0 3층");
     }
 
-    public static int calculateTotalAmount(List<OrderShoes> orderLine, AppliedCoupon coupon){
+    public static int calculateTotalAmount(List<OrderItem> orderLine, AppliedCoupon coupon){
         int totalItemPrice = orderLine.stream()
             .mapToInt(orderShoes -> orderShoes.price().amount() * orderShoes.quantity())
             .sum();

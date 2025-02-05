@@ -14,8 +14,7 @@ import com.msa.order.application.port.out.OrderCreatePort;
 import com.msa.order.domain.Order;
 import com.msa.order.domain.OrderFixtures;
 import com.msa.order.domain.OrderStatus;
-import com.msa.order.domain.vo.AppliedCoupon;
-import com.msa.order.domain.vo.Money;
+import com.msa.common.vo.Money;
 import com.msa.order.exception.InsufficientStockException;
 import com.msa.order.exception.InvalidCouponException;
 import java.time.LocalDateTime;
@@ -62,7 +61,7 @@ class OrderServiceTest {
             Long customerId = 1L;
             CreateNewOrderCommand command = CreateNewOrderCommand.from(OrderFixtures.newOrderWithFixedCouponRequest());
             LocalDateTime orderTime = LocalDateTime.now();
-            Order savedOrder = OrderFixtures.order(OrderStatus.PAYMENT_PENDING, orderTime);
+            Order savedOrder = OrderFixtures.order(1L, OrderStatus.PAYMENT_PENDING, orderTime);
 
             when(orderCreatePort.save(any(Order.class))).thenReturn(savedOrder);
 
@@ -71,7 +70,7 @@ class OrderServiceTest {
 
             // Then
             verify(decreaseStockUseCase, times(1)).decreaseStock(command.orderLine());
-            verify(applyCouponUseCase, times(1)).applyCoupon(any(Money.class), any(Money.class), any(AppliedCoupon.class));
+            verify(applyCouponUseCase, times(1)).applyCoupon(any(Money.class), any(Money.class), any(Long.class));
             verify(orderCreatePort, times(1)).save(any(Order.class));
 
             assertThat(result).isNotNull();
@@ -96,7 +95,7 @@ class OrderServiceTest {
                 .isInstanceOf(InsufficientStockException.class);
 
             verify(decreaseStockUseCase, times(1)).decreaseStock(command.orderLine());
-            verify(applyCouponUseCase, times(0)).applyCoupon(any(Money.class), any(Money.class), any(AppliedCoupon.class));
+            verify(applyCouponUseCase, times(0)).applyCoupon(any(Money.class), any(Money.class), any(Long.class));
             verify(orderCreatePort, times(1)).save(any(Order.class));
         }
 
@@ -109,14 +108,14 @@ class OrderServiceTest {
 
             doThrow(InvalidCouponException.class)
                 .when(applyCouponUseCase)
-                .applyCoupon(any(Money.class), any(Money.class), any(AppliedCoupon.class));
+                .applyCoupon(any(Money.class), any(Money.class), any(Long.class));
 
             // When Then
             assertThatThrownBy(() -> sut.createNewOrder(customerId, command))
                 .isInstanceOf(InvalidCouponException.class);
 
             verify(decreaseStockUseCase, times(1)).decreaseStock(command.orderLine());
-            verify(applyCouponUseCase, times(1)).applyCoupon(any(Money.class), any(Money.class), any(AppliedCoupon.class));
+            verify(applyCouponUseCase, times(1)).applyCoupon(any(Money.class), any(Money.class), any(Long.class));
             verify(decreaseStockUseCase, times(1)).rollback(command.orderLine());
             verify(orderCreatePort, times(1)).save(any(Order.class));
         }

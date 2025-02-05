@@ -30,7 +30,7 @@ public class OrderService implements CreateNewOrderUseCase {
 
         try{
             decreaseStockUseCase.decreaseStock(order.getOrderLine());
-            applyCouponUseCase.applyCoupon(order.getOriginalTotalPrice(), order.getTotalPrice(), order.getAppliedCoupon());
+            applyCouponUseCase.applyCoupon(order.getOriginalTotalPrice(), order.getTotalPrice(), order.getAppliedCouponId());
             order.process();
         }catch (InsufficientStockException e){
             order.fail();
