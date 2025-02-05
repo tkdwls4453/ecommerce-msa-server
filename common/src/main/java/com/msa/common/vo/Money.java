@@ -1,4 +1,4 @@
-package com.msa.order.domain.vo;
+package com.msa.common.vo;
 
 import java.util.Objects;
 
