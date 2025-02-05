@@ -1,15 +1,14 @@
 package com.msa.order.domain.vo;
 
+import com.msa.common.vo.Money;
 import lombok.Builder;
 
 @Builder
-public record OrderShoes(
+public record OrderItem(
     int idx,
-    Long modelId,
-    Long shoesId,
+    Long itemId,
     String itemName,
-    String itemSize,
     int quantity,
     Money price
-){
+) {
 }

@@ -2,8 +2,8 @@ package com.msa.order.domain;
 
 import com.msa.order.application.port.in.CreateNewOrderCommand;
 import com.msa.order.domain.vo.AppliedCoupon;
-import com.msa.order.domain.vo.Money;
-import com.msa.order.domain.vo.OrderShoes;
+import com.msa.common.vo.Money;
+import com.msa.order.domain.vo.OrderItem;
 import com.msa.order.domain.vo.ShippingInfo;
 import com.msa.order.exception.InvalidCouponTypeException;
 import com.msa.order.exception.InvalidTotalPriceException;
@@ -19,22 +19,22 @@ public class Order {
     private Long orderId;
     private final UUID orderCode;
     private final Long customerId;
-    private final AppliedCoupon appliedCoupon;
+    private final Long appliedCouponId;
     private ShippingInfo shippingInfo;
-    private List<OrderShoes> orderLine;
+    private List<OrderItem> orderLine;
     private OrderStatus orderStatus;
     private Money totalPrice;
     private LocalDateTime orderTime;
 
 
     @Builder
-    private Order(Long orderId, UUID orderCode, Long customerId, AppliedCoupon appliedCoupon,
-        ShippingInfo shippingInfo, List<OrderShoes> orderLine, OrderStatus orderStatus,
+    private Order(Long orderId, UUID orderCode, Long customerId, Long appliedCouponId,
+        ShippingInfo shippingInfo, List<OrderItem> orderLine, OrderStatus orderStatus,
         Money totalPrice, LocalDateTime orderTime) {
         this.orderId = orderId;
         this.orderCode = orderCode;
         this.customerId = customerId;
-        this.appliedCoupon = appliedCoupon;
+        this.appliedCouponId = appliedCouponId;
         this.shippingInfo = shippingInfo;
         this.orderLine = orderLine;
         this.orderStatus = orderStatus;
@@ -48,7 +48,7 @@ public class Order {
         return Order.builder()
             .orderCode(orderCode)
             .customerId(customerId)
-            .appliedCoupon(command.coupon())
+            .appliedCouponId(command.coupon() == null ? null : command.coupon().couponId())
             .shippingInfo(command.shippingInfo())
             .orderLine(command.orderLine())
             .orderStatus(OrderStatus.ORDER_RECEIVED)
@@ -57,7 +57,7 @@ public class Order {
             .build();
     }
 
-    private static void verifyTotalPrice(List<OrderShoes> orderLine, AppliedCoupon coupon, Money totalPrice) {
+    private static void verifyTotalPrice(List<OrderItem> orderLine, AppliedCoupon coupon, Money totalPrice) {
         Money originalTotalPrice = orderLine.stream()
             .map(orderShoes -> orderShoes.price().multiply(orderShoes.quantity()))
             .reduce(Money::add)

@@ -1,7 +1,7 @@
 package com.msa.order.adapter.in.web.dto;
 
 import com.msa.order.domain.Order;
-import com.msa.order.domain.vo.OrderShoes;
+import com.msa.order.domain.vo.OrderItem;
 import com.msa.order.domain.vo.ShippingInfo;
 import java.util.List;
 import lombok.Builder;
@@ -11,7 +11,7 @@ public record CreatedNewOrderResponse(
     Long orderId,
     String orderCode,
     String orderStatus,
-    List<OrderShoes> orderLine,
+    List<OrderItem> orderLine,
     ShippingInfo shippingInfo,
     Integer totalPrice
 ) {
