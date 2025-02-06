@@ -3,6 +3,7 @@ package com.msa.order.adapter.out.persistence;
 import com.msa.common.vo.Money;
 import com.msa.order.domain.vo.OrderItem;
 import jakarta.persistence.Embeddable;
+import java.math.BigDecimal;
 import lombok.Builder;
 
 @Builder
@@ -12,7 +13,7 @@ public record OrderItemEntity(
     Long itemId,
     String itemName,
     int quantity,
-    int price
+    BigDecimal price
 ) {
 
 

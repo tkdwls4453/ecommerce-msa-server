@@ -95,10 +95,7 @@ class OrderControllerTest {
                 .shippingInfo(null)
                 .orderLine(OrderFixtures.orderLine())
                 .coupon(OrderFixtures.fixedCoupon())
-                .totalAmount(OrderFixtures.calculateTotalAmount(
-                    OrderFixtures.orderLine(),
-                    OrderFixtures.fixedCoupon()
-                ))
+                .totalAmount(OrderFixtures.FIXED_TOTAL_AMOUNT)
                 .build();
 
             String body = objectMapper.writeValueAsString(request);
@@ -125,10 +122,7 @@ class OrderControllerTest {
                 .shippingInfo(OrderFixtures.shippingInfo())
                 .orderLine(null)
                 .coupon(OrderFixtures.fixedCoupon())
-                .totalAmount(OrderFixtures.calculateTotalAmount(
-                    OrderFixtures.orderLine(),
-                    OrderFixtures.fixedCoupon()
-                ))
+                .totalAmount(OrderFixtures.PERCENT_TOTAL_AMOUNT)
                 .build();
 
             String body = objectMapper.writeValueAsString(request);
@@ -155,10 +149,7 @@ class OrderControllerTest {
                 .shippingInfo(OrderFixtures.shippingInfo())
                 .orderLine(new ArrayList<>())
                 .coupon(OrderFixtures.fixedCoupon())
-                .totalAmount(OrderFixtures.calculateTotalAmount(
-                    OrderFixtures.orderLine(),
-                    OrderFixtures.fixedCoupon()
-                ))
+                .totalAmount(OrderFixtures.FIXED_TOTAL_AMOUNT)
                 .build();
 
             String body = objectMapper.writeValueAsString(request);

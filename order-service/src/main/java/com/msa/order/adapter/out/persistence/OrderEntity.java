@@ -16,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -54,7 +55,7 @@ public class OrderEntity {
     private OrderStatus orderStatus;
 
     @Column(nullable = false)
-    private Integer totalPrice;
+    private BigDecimal totalPrice;
 
     @Column(nullable = false)
     private LocalDateTime orderTime;
@@ -63,7 +64,7 @@ public class OrderEntity {
     private OrderEntity(Long orderId, String orderCode, Long customerId, Long appliedCouponId,
         String recipientName, String address, List<OrderItemEntity> orderLine,
         OrderStatus orderStatus,
-        Integer totalPrice, LocalDateTime orderTime) {
+        BigDecimal totalPrice, LocalDateTime orderTime) {
         this.orderId = orderId;
         this.orderCode = orderCode;
         this.customerId = customerId;
