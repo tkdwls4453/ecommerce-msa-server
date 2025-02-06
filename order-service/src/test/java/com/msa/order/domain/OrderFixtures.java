@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class OrderFixtures {
+    public static final int FIXED_TOTAL_AMOUNT = 415000;
+    public static final int PERCENT_TOTAL_AMOUNT = 292600;
+    public static final int ORIGINAL_TOTAL_AMOUNT = 418000;
     public static Order order(Long id, OrderStatus status, LocalDateTime orderTime){
         return Order.builder()
             .orderId(id)
@@ -19,7 +22,7 @@ public class OrderFixtures {
             .orderLine(orderLine())
             .appliedCouponId(fixedCoupon().couponId())
             .shippingInfo(shippingInfo())
-            .totalPrice(new Money(calculateTotalAmount(orderLine(), fixedCoupon())))
+            .totalPrice(new Money(FIXED_TOTAL_AMOUNT))
             .orderTime(orderTime)
             .build();
     }
@@ -29,7 +32,7 @@ public class OrderFixtures {
             .orderLine(orderLine())
             .coupon(percentageCoupon())
             .shippingInfo(shippingInfo())
-            .totalAmount(calculateTotalAmount(orderLine(), percentageCoupon()))
+            .totalAmount(PERCENT_TOTAL_AMOUNT)
             .build();
     }
 
@@ -38,7 +41,7 @@ public class OrderFixtures {
             .orderLine(orderLine())
             .coupon(fixedCoupon())
             .shippingInfo(shippingInfo())
-            .totalAmount(calculateTotalAmount(orderLine(), fixedCoupon()))
+            .totalAmount(FIXED_TOTAL_AMOUNT)
             .build();
     }
 
@@ -60,25 +63,5 @@ public class OrderFixtures {
 
     public static ShippingInfo shippingInfo(){
         return new ShippingInfo("윤상진", "경기도 고양시 행신동 000-0 3층");
-    }
-
-    public static int calculateTotalAmount(List<OrderItem> orderLine, AppliedCoupon coupon){
-        int totalItemPrice = orderLine.stream()
-            .mapToInt(orderShoes -> orderShoes.price().amount() * orderShoes.quantity())
-            .sum();
-
-        int discountAmount = 0;
-        if (coupon != null) {
-            switch (coupon.type()){
-                case "FIXED":
-                    discountAmount = coupon.amount();
-                    break;
-                case "PERCENTAGE":
-                    discountAmount = totalItemPrice * (coupon.amount() / 100);
-                    break;
-            }
-        }
-
-        return totalItemPrice - discountAmount;
     }
 }

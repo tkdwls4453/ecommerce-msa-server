@@ -70,7 +70,7 @@ class OrderTest {
             CreateNewOrderRequest request = CreateNewOrderRequest.builder()
                 .orderLine(OrderFixtures.orderLine())
                 .shippingInfo(OrderFixtures.shippingInfo())
-                .totalAmount(OrderFixtures.calculateTotalAmount(OrderFixtures.orderLine(), null))
+                .totalAmount(OrderFixtures.ORIGINAL_TOTAL_AMOUNT)
                 .coupon(null)
                 .build();
 
@@ -156,7 +156,7 @@ class OrderTest {
             CreateNewOrderRequest request = CreateNewOrderRequest.builder()
                 .orderLine(OrderFixtures.orderLine())
                 .shippingInfo(OrderFixtures.shippingInfo())
-                .totalAmount(OrderFixtures.calculateTotalAmount(OrderFixtures.orderLine(), invalidCoupon))
+                .totalAmount(OrderFixtures.PERCENT_TOTAL_AMOUNT)
                 .coupon(invalidCoupon)
                 .build();
 

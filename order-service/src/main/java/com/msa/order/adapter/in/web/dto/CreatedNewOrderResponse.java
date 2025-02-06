@@ -1,5 +1,6 @@
 package com.msa.order.adapter.in.web.dto;
 
+import com.msa.common.vo.Money;
 import com.msa.order.domain.Order;
 import com.msa.order.domain.vo.OrderItem;
 import com.msa.order.domain.vo.ShippingInfo;
@@ -13,7 +14,7 @@ public record CreatedNewOrderResponse(
     String orderStatus,
     List<OrderItem> orderLine,
     ShippingInfo shippingInfo,
-    Integer totalPrice
+    Money totalPrice
 ) {
 
     public static CreatedNewOrderResponse from(Order newOrder) {
@@ -23,7 +24,8 @@ public record CreatedNewOrderResponse(
             .orderStatus(newOrder.getOrderStatus().toString())
             .orderLine(newOrder.getOrderLine())
             .shippingInfo(newOrder.getShippingInfo())
-            .totalPrice(newOrder.getTotalPrice().amount())
+            .totalPrice(new Money(newOrder.getTotalPrice().amount()))
             .build();
     }
+
 }

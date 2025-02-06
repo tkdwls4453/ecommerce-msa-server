@@ -55,11 +55,11 @@ public class Order {
             .totalPrice(command.totalPrice())
             .orderTime(orderTime)
             .build();
-    }
+     }
 
     private static void verifyTotalPrice(List<OrderItem> orderLine, AppliedCoupon coupon, Money totalPrice) {
         Money originalTotalPrice = orderLine.stream()
-            .map(orderShoes -> orderShoes.price().multiply(orderShoes.quantity()))
+            .map(orderItem -> orderItem.price().multiply(orderItem.quantity()))
             .reduce(Money::add)
             .orElseThrow(NoOrderItemException::new);
 
@@ -72,10 +72,12 @@ public class Order {
             case "FIXED":
                 yield  new Money(coupon.amount());
             case "PERCENTAGE":
-                yield originalTotalPrice.multiply(coupon.amount() / 100);
+                yield originalTotalPrice.getPercentDiscountAmount(coupon.amount());
             default:
                 throw new InvalidCouponTypeException();
         };
+
+        System.out.println(originalTotalPrice.subtract(disCountPrice));
 
         if(!originalTotalPrice.subtract(disCountPrice).equals(totalPrice)) throw new InvalidTotalPriceException();
 
