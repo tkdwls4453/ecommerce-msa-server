@@ -3,3 +3,5 @@ include 'common'
 include 'user-service'
 include 'order-service'
 include 'product-service'
+include 'payment-service'
+
