@@ -1,6 +1,13 @@
 package com.msa.payment.domain;
 
 import com.msa.common.vo.Money;
+import com.msa.payment.application.port.in.dto.CreatePaymentCommand;
+import com.msa.payment.application.port.out.dto.SimpleOrderResponse;
+import com.msa.payment.exception.OrderPermissionDeniedException;
+import com.msa.payment.exception.PaymentOrderInvalidException;
+import com.msa.payment.exception.PriceMismatchException;
+import jakarta.persistence.criteria.Order;
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -31,6 +38,45 @@ public class Payment {
         this.failReason = failReason;
         this.cancelYN = cancelYN;
         this.cancelReason = cancelReason;
+    }
+
+    public static Payment init(Long customerId, CreatePaymentCommand command, SimpleOrderResponse simpleOrder) {
+        verifyOrder(command.orderId(), simpleOrder);
+        verifyAmount(command.amount(), simpleOrder.totalPrice());
+        verifyCustomer(customerId, simpleOrder);
+
+        return Payment.builder()
+            .orderId(simpleOrder.orderId())
+            .orderCode(simpleOrder.orderCode())
+            .customerId(customerId)
+            .amount(simpleOrder.totalPrice())
+            .build();
+    }
+
+    private static void verifyCustomer(Long customerId, SimpleOrderResponse simpleOrder) {
+        if(!Objects.equals(customerId, simpleOrder.customerId())) {
+            throw new OrderPermissionDeniedException();
+        }
+    }
+
+
+    private static void verifyOrder(Long orderId, SimpleOrderResponse simpleOrder) {
+        if (simpleOrder == null) {
+            throw new PaymentOrderInvalidException();
+        }
+        if(!simpleOrder.orderStatus().equals("PAYMENT_PENDING")){
+            throw new PaymentOrderInvalidException();
+        }
+
+        if(!Objects.equals(orderId, simpleOrder.orderId())){
+            throw new PaymentOrderInvalidException();
+        }
+    }
+
+    private static void verifyAmount(Integer amount, Money money) {
+        if(!money.equals(new Money(amount))) {
+            throw new PriceMismatchException();
+        }
     }
 
     public String getStringPayType(){
