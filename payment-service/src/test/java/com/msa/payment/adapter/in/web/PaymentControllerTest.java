@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.msa.common.vo.Money;
 import com.msa.payment.adapter.in.web.dto.CreatePaymentRequest;
 import com.msa.payment.application.port.in.PaymentCommandUseCase;
 import com.msa.payment.application.port.in.dto.CreatePaymentCommand;
@@ -64,7 +65,7 @@ class PaymentControllerTest {
             // Given
             CreatePaymentRequest request = CreatePaymentRequest.builder()
                 .orderId(1L)
-                .amount(30000)
+                .amount(new Money(30000))
                 .build();
 
             Payment initedPayment = PaymentFixtures.initedPayment();
@@ -100,7 +101,7 @@ class PaymentControllerTest {
             // Given
             CreatePaymentRequest request = CreatePaymentRequest.builder()
                 .orderId(null)
-                .amount(30000)
+                .amount(new Money(30000))
                 .build();
 
             String body = objectMapper.writeValueAsString(request);

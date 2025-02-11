@@ -56,7 +56,7 @@ class PaymentServiceTest {
             Long customerId = 1L;
             CreatePaymentRequest request = CreatePaymentRequest.builder()
                 .orderId(1L)
-                .amount(30000)
+                .amount(new Money(30000))
                 .build();
 
             CreatePaymentCommand command = CreatePaymentCommand.from(request);

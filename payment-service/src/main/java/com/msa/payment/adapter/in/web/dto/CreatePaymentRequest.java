@@ -1,5 +1,6 @@
 package com.msa.payment.adapter.in.web.dto;
 
+import com.msa.common.vo.Money;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -9,7 +10,7 @@ public record CreatePaymentRequest(
     Long orderId,
 
     @NotNull(message = "결제 금액 정보는 필수입니다.")
-    Integer amount
+    Money amount
 ) {
 
 }

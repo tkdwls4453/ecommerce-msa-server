@@ -26,7 +26,7 @@ class PaymentTest {
             Long customerId = 1L;
             CreatePaymentRequest request = CreatePaymentRequest.builder()
                 .orderId(1L)
-                .amount(30000)
+                .amount(new Money(30000))
                 .build();
             CreatePaymentCommand command = CreatePaymentCommand.from(request);
             SimpleOrderResponse simpleOrderResponse = OrderFixtures.simpleOrderResponse();
@@ -50,7 +50,7 @@ class PaymentTest {
             Long customerId = 1L;
             CreatePaymentRequest request = CreatePaymentRequest.builder()
                 .orderId(1L)
-                .amount(30000)
+                .amount(new Money(30000))
                 .build();
             CreatePaymentCommand command = CreatePaymentCommand.from(request);
             SimpleOrderResponse invalidSimpleOrderResponse = OrderFixtures.invalidSimpleOrderResponse();
@@ -69,7 +69,7 @@ class PaymentTest {
             Long invalidCustomerId = 2L;
             CreatePaymentRequest request = CreatePaymentRequest.builder()
                 .orderId(1L)
-                .amount(30000)
+                .amount(new Money(30000))
                 .build();
             CreatePaymentCommand command = CreatePaymentCommand.from(request);
             SimpleOrderResponse simpleOrderResponse = OrderFixtures.simpleOrderResponse();
@@ -88,7 +88,7 @@ class PaymentTest {
             Long customerId = 1L;
             CreatePaymentRequest request = CreatePaymentRequest.builder()
                 .orderId(1L)
-                .amount(3000)
+                .amount(new Money(300))
                 .build();
             CreatePaymentCommand command = CreatePaymentCommand.from(request);
             SimpleOrderResponse simpleOrderResponse = OrderFixtures.simpleOrderResponse();

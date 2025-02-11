@@ -51,7 +51,7 @@ public class Payment {
             .paymentStatus(PaymentStatus.INITIALIZED)
             .orderCode(simpleOrder.orderCode())
             .customerId(customerId)
-            .amount(simpleOrder.totalPrice())
+            .amount(command.amount())
             .build();
     }
 
@@ -75,8 +75,8 @@ public class Payment {
         }
     }
 
-    private static void verifyAmount(Integer amount, Money money) {
-        if(!money.equals(new Money(amount))) {
+    private static void verifyAmount(Money amount, Money money) {
+        if(!money.equals(amount)) {
             throw new PriceMismatchException();
         }
     }
