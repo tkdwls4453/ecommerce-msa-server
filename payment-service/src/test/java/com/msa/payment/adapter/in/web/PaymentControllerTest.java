@@ -11,8 +11,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msa.payment.adapter.in.web.dto.CreatePaymentRequest;
-import com.msa.payment.application.port.in.CommandPaymentUseCase;
+import com.msa.payment.application.port.in.PaymentCommandUseCase;
 import com.msa.payment.application.port.in.dto.CreatePaymentCommand;
+import com.msa.payment.application.port.out.PaymentCommandPort;
 import com.msa.payment.domain.Payment;
 import com.msa.payment.domain.PaymentFixtures;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +35,10 @@ class PaymentControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private CommandPaymentUseCase commandPaymentUseCase;
+    private PaymentCommandUseCase commandPaymentUseCase;
+
+    @MockitoBean
+    private PaymentCommandPort paymentCommandPort;
 
     /**
      * 결제 시도 api

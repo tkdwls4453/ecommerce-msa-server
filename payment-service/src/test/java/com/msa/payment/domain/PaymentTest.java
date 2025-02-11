@@ -39,6 +39,7 @@ class PaymentTest {
             assertThat(result.getCustomerId()).isEqualTo(customerId);
             assertThat(result.getOrderId()).isEqualTo(1L);
             assertThat(result.getAmount()).isEqualTo(new Money(30000));
+            assertThat(result.getPaymentStatus()).isEqualTo(PaymentStatus.INITIALIZED);
             assertThat(result.getOrderCode()).isEqualTo("test_order_code");
         }
 

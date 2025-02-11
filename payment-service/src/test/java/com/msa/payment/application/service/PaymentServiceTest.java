@@ -8,10 +8,10 @@ import static org.mockito.Mockito.when;
 
 import com.msa.common.vo.Money;
 import com.msa.payment.adapter.in.web.dto.CreatePaymentRequest;
-import com.msa.payment.application.port.out.CommandPaymentPort;
+import com.msa.payment.application.port.out.PaymentCommandPort;
 import com.msa.payment.application.port.out.dto.SimpleOrderResponse;
 import com.msa.payment.application.port.in.dto.CreatePaymentCommand;
-import com.msa.payment.application.port.out.QueryOrderPort;
+import com.msa.payment.application.port.out.OrderQueryPort;
 import com.msa.payment.domain.OrderFixtures;
 import com.msa.payment.domain.Payment;
 import com.msa.payment.domain.PaymentFixtures;
@@ -30,10 +30,10 @@ class PaymentServiceTest {
     private PaymentService sut;
 
     @Mock
-    private QueryOrderPort queryOrderPort;
+    private OrderQueryPort queryOrderPort;
 
     @Mock
-    private CommandPaymentPort commandPaymentPort;
+    private PaymentCommandPort commandPaymentPort;
     /**
      * 결제 시도 서비스 기능
      * 입력: customerId, 주문 생성 커맨드 (orderId, amount)
