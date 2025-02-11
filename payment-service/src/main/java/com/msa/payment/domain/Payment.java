@@ -6,7 +6,6 @@ import com.msa.payment.application.port.out.dto.SimpleOrderResponse;
 import com.msa.payment.exception.OrderPermissionDeniedException;
 import com.msa.payment.exception.PaymentOrderInvalidException;
 import com.msa.payment.exception.PriceMismatchException;
-import jakarta.persistence.criteria.Order;
 import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +14,7 @@ import lombok.Getter;
 public class Payment {
     private Long paymentId;
     private PayType payType;
+    private PaymentStatus paymentStatus;
     private Money amount;
     private Long orderId;
     private String orderCode;
@@ -25,11 +25,12 @@ public class Payment {
     private String cancelReason;
 
     @Builder
-    private Payment(Long paymentId, PayType payType, Money amount, Long orderId, String orderCode,
+    private Payment(Long paymentId, PayType payType, PaymentStatus paymentStatus, Money amount, Long orderId, String orderCode,
         Long customerId, String paymentKey, String failReason, boolean cancelYN,
         String cancelReason) {
         this.paymentId = paymentId;
         this.payType = payType;
+        this.paymentStatus = paymentStatus;
         this.amount = amount;
         this.orderId = orderId;
         this.orderCode = orderCode;
@@ -47,6 +48,7 @@ public class Payment {
 
         return Payment.builder()
             .orderId(simpleOrder.orderId())
+            .paymentStatus(PaymentStatus.INITIALIZED)
             .orderCode(simpleOrder.orderCode())
             .customerId(customerId)
             .amount(simpleOrder.totalPrice())

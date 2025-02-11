@@ -3,7 +3,7 @@ package com.msa.payment.adapter.in.web;
 import com.msa.common.response.ApiResponse;
 import com.msa.payment.adapter.in.web.dto.CreatePaymentRequest;
 import com.msa.payment.adapter.in.web.dto.CreatedPaymentResponse;
-import com.msa.payment.application.port.in.CommandPaymentUseCase;
+import com.msa.payment.application.port.in.PaymentCommandUseCase;
 import com.msa.payment.application.port.in.dto.CreatePaymentCommand;
 import com.msa.payment.domain.Payment;
 import jakarta.validation.Valid;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PaymentController {
 
-    private final CommandPaymentUseCase commandPaymentUseCase;
+    private final PaymentCommandUseCase commandPaymentUseCase;
 
     @PostMapping
     public ApiResponse<CreatedPaymentResponse> tryPayment(
