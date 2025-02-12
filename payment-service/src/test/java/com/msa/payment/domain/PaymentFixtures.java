@@ -1,6 +1,8 @@
 package com.msa.payment.domain;
 
 import com.msa.common.vo.Money;
+import com.msa.payment.adapter.out.persistence.PaymentEntity;
+import java.math.BigDecimal;
 
 public class PaymentFixtures {
 
@@ -11,6 +13,7 @@ public class PaymentFixtures {
             .orderCode("test_order_code")
             .customerId(1L)
             .amount(new Money(30000))
+            .paymentStatus(PaymentStatus.INITIALIZED)
             .cancelYN(false)
             .build();
     }
@@ -26,4 +29,17 @@ public class PaymentFixtures {
             .cancelYN(false)
             .build();
     }
+
+    public static PaymentEntity paymentEntity() {
+        return PaymentEntity.builder()
+            .paymentId(1L)
+            .orderId(1L)
+            .orderCode("test_order_code")
+            .customerId(1L)
+            .paymentStatus(PaymentStatus.INITIALIZED)
+            .amount(new BigDecimal(30000))
+            .cancelYN(false)
+            .build();
+    }
+
 }

@@ -24,4 +24,14 @@ public class OrderFixtures {
             .totalPrice(new Money(30000))
             .build();
     }
+
+    public static SimpleOrderResponse simpleOrderResponse(Long orderId, Long customerId, Money totalPrice){
+        return SimpleOrderResponse.builder()
+            .orderId(orderId)
+            .orderCode("test_order_code")
+            .customerId(customerId)
+            .orderStatus("PAYMENT_PENDING")
+            .totalPrice(totalPrice)
+            .build();
+    }
 }
