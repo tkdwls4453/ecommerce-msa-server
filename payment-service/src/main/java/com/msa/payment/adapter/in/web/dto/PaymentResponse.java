@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import lombok.Builder;
 
 @Builder
-public record CreatedPaymentResponse(
+public record PaymentResponse(
     Long paymentId,
     String payType,
     BigDecimal amount,
@@ -18,8 +18,8 @@ public record CreatedPaymentResponse(
     String cancelReason
 ) {
 
-    public static CreatedPaymentResponse from(Payment payment) {
-        return CreatedPaymentResponse.builder()
+    public static PaymentResponse from(Payment payment) {
+        return PaymentResponse.builder()
             .paymentId(payment.getPaymentId())
             .payType(payment.getStringPayType())
             .amount(payment.getAmount().amount())
