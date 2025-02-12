@@ -29,4 +29,6 @@ public class PaymentController {
         Payment initedPayment = commandPaymentUseCase.tryPayment(customerId, CreatePaymentCommand.from(request));
         return ApiResponse.success(CreatedPaymentResponse.from(initedPayment));
     }
+
+
 }

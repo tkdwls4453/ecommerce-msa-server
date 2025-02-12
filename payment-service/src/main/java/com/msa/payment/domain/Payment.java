@@ -41,15 +41,10 @@ public class Payment {
         this.cancelReason = cancelReason;
     }
 
-    public static Payment init(Long customerId, CreatePaymentCommand command, SimpleOrderResponse simpleOrder) {
-        verifyOrder(command.orderId(), simpleOrder);
-        verifyAmount(command.amount(), simpleOrder.totalPrice());
-        verifyCustomer(customerId, simpleOrder);
-
+    public static Payment init(Long customerId, CreatePaymentCommand command) {
         return Payment.builder()
-            .orderId(simpleOrder.orderId())
+            .orderId(command.orderId())
             .paymentStatus(PaymentStatus.INITIALIZED)
-            .orderCode(simpleOrder.orderCode())
             .customerId(customerId)
             .amount(command.amount())
             .build();

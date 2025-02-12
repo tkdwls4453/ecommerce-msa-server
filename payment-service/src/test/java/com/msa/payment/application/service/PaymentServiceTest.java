@@ -60,10 +60,6 @@ class PaymentServiceTest {
                 .build();
 
             CreatePaymentCommand command = CreatePaymentCommand.from(request);
-            SimpleOrderResponse simpleOrderResponse = OrderFixtures.simpleOrderResponse();
-
-            when(queryOrderPort.findSimpleOrderByOrderId(any(Long.class)))
-                .thenReturn(simpleOrderResponse);
 
             when(commandPaymentPort.save(any(Payment.class)))
                 .thenReturn(PaymentFixtures.initedPayment());
@@ -79,7 +75,6 @@ class PaymentServiceTest {
             assertThat(result.getCustomerId()).isEqualTo(customerId);
             assertThat(result.getPaymentId()).isEqualTo(1L);
 
-            verify(queryOrderPort, times(1)).findSimpleOrderByOrderId(any(Long.class));
             verify(commandPaymentPort, times(1)).save(any(Payment.class));
         }
     }
