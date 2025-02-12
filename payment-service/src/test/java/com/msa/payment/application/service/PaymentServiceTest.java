@@ -8,13 +8,22 @@ import static org.mockito.Mockito.when;
 
 import com.msa.common.vo.Money;
 import com.msa.payment.adapter.in.web.dto.CreatePaymentRequest;
+import com.msa.payment.adapter.in.web.dto.VerifyPaymentRequest;
+import com.msa.payment.application.port.in.dto.VerifyPaymentCommand;
 import com.msa.payment.application.port.out.PaymentCommandPort;
+import com.msa.payment.application.port.out.PaymentQueryPort;
 import com.msa.payment.application.port.out.dto.SimpleOrderResponse;
 import com.msa.payment.application.port.in.dto.CreatePaymentCommand;
 import com.msa.payment.application.port.out.OrderQueryPort;
 import com.msa.payment.domain.OrderFixtures;
 import com.msa.payment.domain.Payment;
 import com.msa.payment.domain.PaymentFixtures;
+import com.msa.payment.domain.PaymentStatus;
+import com.msa.payment.exception.OrderPermissionDeniedException;
+import com.msa.payment.exception.PaymentNotFoundException;
+import com.msa.payment.exception.PaymentOrderInvalidException;
+import com.msa.payment.exception.PriceMismatchException;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,10 +39,13 @@ class PaymentServiceTest {
     private PaymentService sut;
 
     @Mock
-    private OrderQueryPort queryOrderPort;
+    private OrderQueryPort orderQueryPort;
 
     @Mock
     private PaymentCommandPort commandPaymentPort;
+
+    @Mock
+    private PaymentQueryPort paymentQueryPort;
     /**
      * 결제 시도 서비스 기능
      * 입력: customerId, 주문 생성 커맨드 (orderId, amount)
@@ -76,6 +88,154 @@ class PaymentServiceTest {
             assertThat(result.getPaymentId()).isEqualTo(1L);
 
             verify(commandPaymentPort, times(1)).save(any(Payment.class));
+        }
+    }
+
+    @Nested
+    @DisplayName("[SERVICE] 결제 정보 검증 테스트")
+    class verify{
+        @Test
+        @DisplayName("결제 검증을 시도하면 유저 정보, 주문 정보를 검증 후 결제 정보를 수정하고 검증된 결제를 반환한다.")
+        void test2000(){
+            // Given
+            Long customerId = 1L;
+            VerifyPaymentRequest request = VerifyPaymentRequest.builder()
+                .paymentId(1L)
+                .orderId(1L)
+                .paymentKey("test_payment_key")
+                .build();
+
+            VerifyPaymentCommand command = VerifyPaymentCommand.from(request);
+
+            when(paymentQueryPort.findById(any(Long.class)))
+                .thenReturn(Optional.of(PaymentFixtures.initedPayment()));
+
+            when(orderQueryPort.findSimpleOrderByOrderId(any(Long.class)))
+                .thenReturn(OrderFixtures.simpleOrderResponse());
+
+            when(commandPaymentPort.save(any(Payment.class)))
+                .thenReturn(PaymentFixtures.verifiedPayment());
+
+            // When
+            Payment result = sut.verify(customerId, command);
+
+            // Then
+            assertThat(result).isNotNull();
+            assertThat(result.getOrderId()).isEqualTo(1L);
+            assertThat(result.getOrderCode()).isEqualTo("test_order_code");
+            assertThat(result.getPaymentKey()).isEqualTo("test_payment_key");
+            assertThat(result.getPaymentStatus()).isEqualTo(PaymentStatus.PENDING);
+            assertThat(result.getAmount()).isEqualTo(new Money(30000));
+            assertThat(result.getCustomerId()).isEqualTo(customerId);
+            assertThat(result.getPaymentId()).isEqualTo(1L);
+
+            verify(paymentQueryPort, times(1)).findById(any(Long.class));
+            verify(orderQueryPort, times(1)).findSimpleOrderByOrderId(any(Long.class));
+            verify(commandPaymentPort, times(1)).save(any(Payment.class));
+        }
+
+        @Test
+        @DisplayName("결제 검증 요청시, 주문 유저와 결제 유저가 다르면 예외를 발생시킨다.")
+        void test1(){
+            // Given
+            Long customerId = 2L;
+            VerifyPaymentRequest request = VerifyPaymentRequest.builder()
+                .paymentId(1L)
+                .orderId(1L)
+                .paymentKey("test_payment_key")
+                .build();
+
+            VerifyPaymentCommand command = VerifyPaymentCommand.from(request);
+
+            when(paymentQueryPort.findById(any(Long.class)))
+                .thenReturn(Optional.of(PaymentFixtures.initedPayment()));
+
+            when(orderQueryPort.findSimpleOrderByOrderId(any(Long.class)))
+                .thenReturn(OrderFixtures.simpleOrderResponse(1L, 2L, new Money(30000)));
+
+            // When Then
+            assertThatThrownBy(
+                () -> sut.verify(customerId, command)
+            )
+                .isInstanceOf(PaymentOrderInvalidException.class);
+        }
+
+        @Test
+        @DisplayName("결제 검증 요청시, 주문 금액 정보와 결제 금액 정보가 다르면 예외를 발생시킨다.")
+        void test2(){
+            // Given
+            Long customerId = 1L;
+            VerifyPaymentRequest request = VerifyPaymentRequest.builder()
+                .paymentId(1L)
+                .orderId(1L)
+                .paymentKey("test_payment_key")
+                .build();
+
+            VerifyPaymentCommand command = VerifyPaymentCommand.from(request);
+
+            when(paymentQueryPort.findById(any(Long.class)))
+                .thenReturn(Optional.of(PaymentFixtures.initedPayment()));
+
+            when(orderQueryPort.findSimpleOrderByOrderId(any(Long.class)))
+                .thenReturn(OrderFixtures.simpleOrderResponse(1L, 1L, new Money(3000)));
+
+            // When Then
+
+            assertThatThrownBy(
+                () -> sut.verify(customerId, command)
+            )
+                .isInstanceOf(PriceMismatchException.class);
+        }
+
+        @Test
+        @DisplayName("결제 검증 요청시, 잘못된 주문 아이디라면 예외를 발생시킨다.")
+        void test3(){
+            // Given
+            Long customerId = 1L;
+            Long wrongOrderId = 2L;
+            VerifyPaymentRequest request = VerifyPaymentRequest.builder()
+                .paymentId(1L)
+                .orderId(1L)
+                .paymentKey("test_payment_key")
+                .build();
+
+            VerifyPaymentCommand command = VerifyPaymentCommand.from(request);
+
+            when(paymentQueryPort.findById(any(Long.class)))
+                .thenReturn(Optional.of(PaymentFixtures.initedPayment()));
+
+            when(orderQueryPort.findSimpleOrderByOrderId(any(Long.class)))
+                .thenReturn(OrderFixtures.simpleOrderResponse(wrongOrderId, 1L, new Money(30000)));
+
+            // When Then
+            assertThatThrownBy(
+                () -> sut.verify(customerId, command)
+            )
+                .isInstanceOf(PaymentOrderInvalidException.class);
+        }
+
+        @Test
+        @DisplayName("결제 검증 요청시, 존재하지 않은 결제 아이디라면 예외를 발생시킨다.")
+        void test4(){
+            // Given
+            Long customerId = 1L;
+            Long wrongPaymentId = 200L;
+            VerifyPaymentRequest request = VerifyPaymentRequest.builder()
+                .paymentId(wrongPaymentId)
+                .orderId(1L)
+                .paymentKey("test_payment_key")
+                .build();
+
+            VerifyPaymentCommand command = VerifyPaymentCommand.from(request);
+
+            when(paymentQueryPort.findById(any(Long.class)))
+                .thenReturn(Optional.empty());
+
+            // When Then
+            assertThatThrownBy(
+                () -> sut.verify(customerId, command)
+            )
+                .isInstanceOf(PaymentNotFoundException.class);
         }
     }
 }
