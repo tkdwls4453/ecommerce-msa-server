@@ -17,7 +17,9 @@ import com.msa.payment.adapter.in.web.dto.VerifyPaymentRequest;
 import com.msa.payment.application.port.in.PaymentCommandUseCase;
 import com.msa.payment.application.port.in.dto.CreatePaymentCommand;
 import com.msa.payment.application.port.in.dto.VerifyPaymentCommand;
+import com.msa.payment.application.port.out.OrderQueryPort;
 import com.msa.payment.application.port.out.PaymentCommandPort;
+import com.msa.payment.application.port.out.PaymentQueryPort;
 import com.msa.payment.domain.Payment;
 import com.msa.payment.domain.PaymentFixtures;
 import org.junit.jupiter.api.DisplayName;
@@ -45,6 +47,12 @@ class PaymentControllerTest {
 
     @MockitoBean
     private PaymentCommandPort paymentCommandPort;
+
+    @MockitoBean
+    private PaymentQueryPort paymentQueryPort;
+
+    @MockitoBean
+    private OrderQueryPort orderQueryPort;
 
     /**
      * 결제 시도 api
