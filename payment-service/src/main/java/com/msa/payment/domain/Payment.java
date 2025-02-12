@@ -50,28 +50,31 @@ public class Payment {
             .build();
     }
 
-    private static void verifyCustomer(Long customerId, SimpleOrderResponse simpleOrder) {
-        if(!Objects.equals(customerId, simpleOrder.customerId())) {
+    public void verifyAndPending(Long customerId, SimpleOrderResponse order, String paymentKey) {
+        verifyCustomer(customerId, order);
+        verifyOrder(customerId, order);
+        verifyAmount(order.totalPrice());
+
+        this.paymentKey = paymentKey;
+        this.orderCode = order.orderCode();
+        this.paymentStatus = PaymentStatus.PENDING;
+    }
+
+    private static void verifyCustomer(Long customerId, SimpleOrderResponse order) {
+        if(!Objects.equals(customerId, order.customerId())) {
             throw new OrderPermissionDeniedException();
         }
     }
 
+    private void verifyOrder(Long orderId, SimpleOrderResponse order) {
+        if (order == null) throw new PaymentOrderInvalidException();
+        if(!order.orderStatus().equals("PAYMENT_PENDING")) throw new PaymentOrderInvalidException();
+        if(!Objects.equals(orderId, order.orderId())) throw new PaymentOrderInvalidException();
 
-    private static void verifyOrder(Long orderId, SimpleOrderResponse simpleOrder) {
-        if (simpleOrder == null) {
-            throw new PaymentOrderInvalidException();
-        }
-        if(!simpleOrder.orderStatus().equals("PAYMENT_PENDING")){
-            throw new PaymentOrderInvalidException();
-        }
-
-        if(!Objects.equals(orderId, simpleOrder.orderId())){
-            throw new PaymentOrderInvalidException();
-        }
     }
 
-    private static void verifyAmount(Money amount, Money money) {
-        if(!money.equals(amount)) {
+    private void verifyAmount(Money money) {
+        if(!amount.equals(money)) {
             throw new PriceMismatchException();
         }
     }
@@ -79,5 +82,7 @@ public class Payment {
     public String getStringPayType(){
         return this.getPayType() == null ? null : this.getPayType().toString();
     }
+
+
 }
 
