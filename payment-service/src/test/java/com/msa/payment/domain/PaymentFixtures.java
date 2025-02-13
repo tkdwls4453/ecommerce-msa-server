@@ -42,4 +42,18 @@ public class PaymentFixtures {
             .build();
     }
 
+    public static Payment payment(PaymentStatus paymentStatus, String method, String failReason) {
+        return Payment.builder()
+            .paymentId(1L)
+            .orderId(1L)
+            .orderCode("test_order_code")
+            .customerId(1L)
+            .paymentKey("test_payment_key")
+            .amount(new Money(30000))
+            .paymentStatus(paymentStatus)
+            .cancelYN(false)
+            .method(method)
+            .failReason(failReason)
+            .build();
+    }
 }

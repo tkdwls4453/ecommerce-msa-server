@@ -37,7 +37,6 @@ public class PaymentEntity {
     @Column(nullable = false)
     private Long orderId;
 
-    @Column(nullable = false)
     private String orderCode;
 
     @Column(nullable = false)

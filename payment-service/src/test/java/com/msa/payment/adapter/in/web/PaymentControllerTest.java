@@ -1,7 +1,6 @@
 package com.msa.payment.adapter.in.web;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,11 +16,13 @@ import com.msa.payment.adapter.in.web.dto.VerifyPaymentRequest;
 import com.msa.payment.application.port.in.PaymentCommandUseCase;
 import com.msa.payment.application.port.in.dto.CreatePaymentCommand;
 import com.msa.payment.application.port.in.dto.VerifyPaymentCommand;
+import com.msa.payment.application.port.out.ExternalPaymentPort;
 import com.msa.payment.application.port.out.OrderQueryPort;
 import com.msa.payment.application.port.out.PaymentCommandPort;
 import com.msa.payment.application.port.out.PaymentQueryPort;
 import com.msa.payment.domain.Payment;
 import com.msa.payment.domain.PaymentFixtures;
+import com.msa.payment.domain.PaymentStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -53,6 +54,9 @@ class PaymentControllerTest {
 
     @MockitoBean
     private OrderQueryPort orderQueryPort;
+
+    @MockitoBean
+    private ExternalPaymentPort externalPaymentPort;
 
     /**
      * 결제 시도 api
@@ -240,6 +244,59 @@ class PaymentControllerTest {
                 .andExpect(jsonPath("$.status").value("FAIL"))
                 .andExpect(jsonPath("$.code").value("F400"))
             ;
+        }
+    }
+
+    @Nested
+    @DisplayName("POST /payments/confirm")
+    class confirmPayment{
+        @Test
+        @DisplayName("결제 아이디로 결제 승인 요청시 결제를 승인에 성공하면 200 OK를 반환한다.")
+        void test2000() throws Exception {
+
+            // Given
+            Long paymentId = 1L;
+            Payment successfulPayment = PaymentFixtures.payment(PaymentStatus.COMPLETED, "카드", null);
+            when(paymentCommandUseCase.confirm(paymentId))
+                .thenReturn(successfulPayment);
+
+            // When Then
+            mockMvc.perform(post("/payments/confirm")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .param("paymentId", "1")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("SUCCESS"))
+                .andExpect(jsonPath("$.code").value("S200"))
+                .andExpect(jsonPath("$.data.method").value("카드"))
+                .andExpect(jsonPath("$.data.status").value("COMPLETED"));
+
+            verify(paymentCommandUseCase, times(1)).confirm(paymentId);
+        }
+
+        @Test
+        @DisplayName("결제 아이디로 결제 승인 요청시 결제를 승인에 실패하면 500 에러를 반환한다.")
+        void test1() throws Exception {
+            // Given
+            Long paymentId = 1L;
+            String failReason = "결제 시간이 만료되어 결제 진행 데이터가 존재하지 않습니다.";
+            Payment failedPayment = PaymentFixtures.payment(PaymentStatus.FAILED, null, failReason);
+            when(paymentCommandUseCase.confirm(paymentId))
+                .thenReturn(failedPayment);
+
+
+            // When Then
+            mockMvc.perform(post("/payments/confirm")
+                    .param("paymentId", "1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value("FAIL"))
+                .andExpect(jsonPath("$.code").value("PY500"))
+                .andExpect(jsonPath("$.message").value(failReason));
+            verify(paymentCommandUseCase, times(1)).confirm(paymentId);
         }
     }
 }
