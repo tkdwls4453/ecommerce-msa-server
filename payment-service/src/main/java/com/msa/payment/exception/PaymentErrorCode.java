@@ -14,7 +14,6 @@ public enum PaymentErrorCode implements StatusCode {
     PAYMENT_NOT_FOUNT(HttpStatus.BAD_REQUEST, "FPY403", "존재하지 않는 주문입니다.");
 
 
-
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;

@@ -7,7 +7,8 @@ import lombok.Builder;
 @Builder
 public record PaymentResponse(
     Long paymentId,
-    String payType,
+    String method,
+    String status,
     BigDecimal amount,
     Long orderId,
     String orderCode,
@@ -21,7 +22,8 @@ public record PaymentResponse(
     public static PaymentResponse from(Payment payment) {
         return PaymentResponse.builder()
             .paymentId(payment.getPaymentId())
-            .payType(payment.getStringPayType())
+            .method(payment.getMethod())
+            .status(payment.getPaymentStatusAsString())
             .amount(payment.getAmount().amount())
             .orderId(payment.getOrderId())
             .orderCode(payment.getOrderCode())
