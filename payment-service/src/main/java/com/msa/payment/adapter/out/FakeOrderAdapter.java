@@ -1,13 +1,14 @@
 package com.msa.payment.adapter.out;
 
 import com.msa.common.vo.Money;
+import com.msa.payment.application.port.out.OrderCommandPort;
 import com.msa.payment.application.port.out.OrderQueryPort;
 import com.msa.payment.application.port.out.dto.SimpleOrderResponse;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FakeOrderAdapter implements OrderQueryPort {
+public class FakeOrderAdapter implements OrderQueryPort, OrderCommandPort {
 
     @Override
     public SimpleOrderResponse findSimpleOrderByOrderId(Long orderId) {
@@ -19,5 +20,9 @@ public class FakeOrderAdapter implements OrderQueryPort {
             .totalPrice(new Money(50000))
             .orderTime(LocalDateTime.now())
             .build();
+    }
+
+    @Override
+    public void changeToPreparing(Long orderId) {
     }
 }

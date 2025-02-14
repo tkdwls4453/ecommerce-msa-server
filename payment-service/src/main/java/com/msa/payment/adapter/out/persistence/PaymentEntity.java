@@ -25,8 +25,7 @@ public class PaymentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
-    @Enumerated(EnumType.STRING)
-    private PayType payType;
+    private String method;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
@@ -54,11 +53,11 @@ public class PaymentEntity {
     private String cancelReason;
 
     @Builder
-    private PaymentEntity(Long paymentId, PayType payType, PaymentStatus paymentStatus,
+    private PaymentEntity(Long paymentId, String method, PaymentStatus paymentStatus,
         BigDecimal amount, Long orderId, String orderCode, Long customerId, String paymentKey,
         String failReason, boolean cancelYN, String cancelReason) {
         this.paymentId = paymentId;
-        this.payType = payType;
+        this.method = method;
         this.paymentStatus = paymentStatus;
         this.amount = amount;
         this.orderId = orderId;
@@ -73,7 +72,7 @@ public class PaymentEntity {
     public static PaymentEntity from(Payment payment) {
         return PaymentEntity.builder()
             .paymentId(payment.getPaymentId())
-            .payType(payment.getPayType())
+            .method(payment.getMethod())
             .paymentStatus(payment.getPaymentStatus())
             .amount(payment.getAmount().amount())
             .orderId(payment.getOrderId())
@@ -89,7 +88,7 @@ public class PaymentEntity {
     public Payment toDomain() {
         return Payment.builder()
             .paymentId(paymentId)
-            .payType(payType)
+            .method(method)
             .paymentStatus(paymentStatus)
             .amount(new Money(amount))
             .orderId(orderId)
