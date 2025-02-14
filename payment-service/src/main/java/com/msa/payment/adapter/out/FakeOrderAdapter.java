@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FakeOrderQueryAdapter implements OrderQueryPort {
+public class FakeOrderAdapter implements OrderQueryPort {
 
     @Override
     public SimpleOrderResponse findSimpleOrderByOrderId(Long orderId) {
@@ -16,7 +16,7 @@ public class FakeOrderQueryAdapter implements OrderQueryPort {
             .orderCode("test_order_code")
             .customerId(1L)
             .orderStatus("PAYMENT_PENDING")
-            .totalPrice(new Money(30000))
+            .totalPrice(new Money(50000))
             .orderTime(LocalDateTime.now())
             .build();
     }
