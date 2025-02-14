@@ -6,12 +6,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.msa.common.vo.Money;
 import com.msa.payment.adapter.in.web.dto.CreatePaymentRequest;
 import com.msa.payment.adapter.in.web.dto.VerifyPaymentRequest;
 import com.msa.payment.application.port.in.dto.VerifyPaymentCommand;
+import com.msa.payment.application.port.out.ExternalPaymentPort;
+import com.msa.payment.application.port.out.OrderCommandPort;
 import com.msa.payment.application.port.out.PaymentCommandPort;
 import com.msa.payment.application.port.out.PaymentQueryPort;
+import com.msa.payment.application.port.out.dto.ExternalPaymentResponse;
 import com.msa.payment.application.port.out.dto.SimpleOrderResponse;
 import com.msa.payment.application.port.in.dto.CreatePaymentCommand;
 import com.msa.payment.application.port.out.OrderQueryPort;
@@ -23,6 +27,8 @@ import com.msa.payment.exception.OrderPermissionDeniedException;
 import com.msa.payment.exception.PaymentNotFoundException;
 import com.msa.payment.exception.PaymentOrderInvalidException;
 import com.msa.payment.exception.PriceMismatchException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -42,10 +48,17 @@ class PaymentServiceTest {
     private OrderQueryPort orderQueryPort;
 
     @Mock
+    private OrderCommandPort orderCommandPort;
+
+    @Mock
     private PaymentCommandPort commandPaymentPort;
 
     @Mock
     private PaymentQueryPort paymentQueryPort;
+
+    @Mock
+    private ExternalPaymentPort externalPaymentPort;
+
     /**
      * 결제 시도 서비스 기능
      * 입력: customerId, 주문 생성 커맨드 (orderId, amount)
@@ -236,6 +249,100 @@ class PaymentServiceTest {
                 () -> sut.verify(customerId, command)
             )
                 .isInstanceOf(PaymentNotFoundException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("[SERVICE] 결제 승인 테스트")
+    class confirm{
+        @Test
+        @DisplayName("결제 승인을 시도하면 외부 결제 시스템을 통해 결제 승인 후 결제 정보 상태를 갱신 후 반환한다.")
+        void test2000() throws JsonProcessingException {
+            // Given
+            Long paymentId = 1L;
+            Payment payment = PaymentFixtures.verifiedPayment();
+            LocalDateTime approvedAt = LocalDateTime.now();
+
+            ExternalPaymentResponse response = ExternalPaymentResponse.builder()
+                .paymentKey(payment.getPaymentKey())
+                .orderId(String.valueOf(payment.getOrderId()))
+                .status("DONE")
+                .totalAmount(30000L)
+                .method("카드")
+                .approvedAt(approvedAt.toString())
+                .build();
+
+            when(paymentQueryPort.findById(paymentId)).thenReturn(Optional.of(payment));
+            when(externalPaymentPort.confirm(payment.getPaymentKey(), payment.getOrderCode(), payment.getAmount()))
+                .thenReturn(response);
+
+            when(commandPaymentPort.save(any(Payment.class)))
+                .thenReturn(PaymentFixtures.payment(PaymentStatus.COMPLETED, "카드", null));
+
+            // When
+            Payment result = sut.confirm(paymentId);
+
+            // Then
+            assertThat(result).isNotNull();
+            assertThat(result.getPaymentStatus()).isEqualTo(PaymentStatus.COMPLETED);
+            assertThat(result.getMethod()).isEqualTo("카드");
+            assertThat(result.getAmount()).isEqualTo(new Money(30000));
+
+            verify(paymentQueryPort, times(1)).findById(paymentId);
+            verify(externalPaymentPort, times(1)).confirm(payment.getPaymentKey(), payment.getOrderCode(), payment.getAmount());
+            verify(orderCommandPort, times(1)).changeToPreparing(paymentId);
+            verify(commandPaymentPort, times(1)).save(any(Payment.class));
+        }
+
+        @Test
+        @DisplayName("결제 승인 시도시 존재하지 않는 결제 아이디로 요청하면 예외를 반환한다.")
+        void test1() {
+            // Given
+            Long wrongPaymentId = 2L;
+
+            when(paymentQueryPort.findById(wrongPaymentId)).thenReturn(Optional.empty());
+
+            // When Then
+            assertThatThrownBy(() -> {
+                sut.confirm(wrongPaymentId);
+            })
+                .isInstanceOf(PaymentNotFoundException.class);
+
+
+            verify(paymentQueryPort, times(1)).findById(wrongPaymentId);
+        }
+
+        @Test
+        @DisplayName("결제 승인을 시도할 경우 외부 결제 시스템 결제에 실패하면 결제를 실패 상태로 변경 후 반환한다.")
+        void test3() throws JsonProcessingException {
+            // Given
+            Long paymentId = 1L;
+            Payment payment = PaymentFixtures.verifiedPayment();
+            String failReason = "결제 세션이 만료됐습니다.";
+            ExternalPaymentResponse failResponse = ExternalPaymentResponse.builder()
+                .status("FAIL")
+                .failMessage(failReason)
+                .build();
+
+            when(paymentQueryPort.findById(paymentId)).thenReturn(Optional.of(payment));
+            when(externalPaymentPort.confirm(payment.getPaymentKey(), payment.getOrderCode(), payment.getAmount()))
+                .thenReturn(failResponse);
+
+            when(commandPaymentPort.save(any(Payment.class)))
+                .thenReturn(PaymentFixtures.payment(PaymentStatus.FAILED, null, failReason));
+
+            // When
+            Payment result = sut.confirm(paymentId);
+
+            // Then
+            assertThat(result).isNotNull();
+            assertThat(result.getPaymentStatus()).isEqualTo(PaymentStatus.FAILED);
+            assertThat(result.getFailReason()).isEqualTo(failReason);
+
+            verify(paymentQueryPort, times(1)).findById(paymentId);
+            verify(externalPaymentPort, times(1)).confirm(payment.getPaymentKey(), payment.getOrderCode(), payment.getAmount());
+            verify(orderCommandPort, times(0)).changeToPreparing(paymentId);
+            verify(commandPaymentPort, times(1)).save(any(Payment.class));
         }
     }
 }

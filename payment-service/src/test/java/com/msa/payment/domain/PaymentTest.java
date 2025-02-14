@@ -9,6 +9,8 @@ import com.msa.payment.application.port.out.dto.SimpleOrderResponse;
 import com.msa.payment.exception.OrderPermissionDeniedException;
 import com.msa.payment.exception.PaymentOrderInvalidException;
 import com.msa.payment.exception.PriceMismatchException;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -124,5 +126,25 @@ class PaymentTest {
         }
     }
 
+    @DisplayName("결제 승인 테스트")
+    @Nested
+    class confirmPayment{
 
+        @Test
+        @DisplayName("결제 승인시, 결제 완료 상태로 변경한다.")
+        void test2000(){
+            // Given
+            Payment payment = PaymentFixtures.verifiedPayment();
+            String approvedAt = "2025-02-13T21:31:47.040118";
+
+            // When
+            payment.confirm("카드", approvedAt);
+
+            // Then
+            assertThat(payment).isNotNull();
+            assertThat(payment.getMethod()).isEqualTo("카드");
+            assertThat(payment.getPaymentStatus()).isEqualTo(PaymentStatus.COMPLETED);
+            assertThat(payment.getApprovedAt()).isEqualTo(OffsetDateTime.parse(approvedAt + "z").toLocalDateTime());
+        }
+    }
 }
