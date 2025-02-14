@@ -1,7 +1,6 @@
 package com.msa.payment.adapter.out.persistence;
 
 import com.msa.common.vo.Money;
-import com.msa.payment.domain.PayType;
 import com.msa.payment.domain.Payment;
 import com.msa.payment.domain.PaymentStatus;
 import jakarta.persistence.Column;

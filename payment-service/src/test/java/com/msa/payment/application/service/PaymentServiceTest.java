@@ -261,7 +261,7 @@ class PaymentServiceTest {
             // Given
             Long paymentId = 1L;
             Payment payment = PaymentFixtures.verifiedPayment();
-            LocalDateTime approvedAt = LocalDateTime.now();
+            String approvedAt = "2025-02-14T12:59:42+09:00";
 
             ExternalPaymentResponse response = ExternalPaymentResponse.builder()
                 .paymentKey(payment.getPaymentKey())
@@ -269,7 +269,7 @@ class PaymentServiceTest {
                 .status("DONE")
                 .totalAmount(30000L)
                 .method("카드")
-                .approvedAt(approvedAt.toString())
+                .approvedAt(approvedAt)
                 .build();
 
             when(paymentQueryPort.findById(paymentId)).thenReturn(Optional.of(payment));

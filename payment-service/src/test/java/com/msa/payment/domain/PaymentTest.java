@@ -11,6 +11,7 @@ import com.msa.payment.exception.PaymentOrderInvalidException;
 import com.msa.payment.exception.PriceMismatchException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -135,8 +136,8 @@ class PaymentTest {
         void test2000(){
             // Given
             Payment payment = PaymentFixtures.verifiedPayment();
-            String approvedAt = "2025-02-13T21:31:47.040118";
-
+            String approvedAt = "2025-02-14T12:59:42+09:00";
+            String parsingString = approvedAt.substring(0, approvedAt.indexOf("+"));
             // When
             payment.confirm("카드", approvedAt);
 
@@ -144,7 +145,8 @@ class PaymentTest {
             assertThat(payment).isNotNull();
             assertThat(payment.getMethod()).isEqualTo("카드");
             assertThat(payment.getPaymentStatus()).isEqualTo(PaymentStatus.COMPLETED);
-            assertThat(payment.getApprovedAt()).isEqualTo(OffsetDateTime.parse(approvedAt + "z").toLocalDateTime());
+            assertThat(payment.getApprovedAt()).isEqualTo(
+                LocalDateTime.parse(parsingString, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         }
     }
 }

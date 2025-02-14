@@ -9,6 +9,7 @@ import com.msa.payment.exception.PaymentOrderInvalidException;
 import com.msa.payment.exception.PriceMismatchException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
@@ -67,7 +68,12 @@ public class Payment {
     public void confirm(String method, String approvedAt) {
         this.method = method;
         this.paymentStatus = PaymentStatus.COMPLETED;
-        this.approvedAt = OffsetDateTime.parse(approvedAt + "z").toLocalDateTime();
+        this.approvedAt = changeLocalDateTime(approvedAt);
+    }
+
+    private static LocalDateTime changeLocalDateTime(String approvedAt) {
+        return LocalDateTime.parse(approvedAt.substring(0, approvedAt.indexOf("+")),
+            DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
     private static void verifyCustomer(Long customerId, SimpleOrderResponse order) {
