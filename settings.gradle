@@ -3,3 +3,6 @@ include 'common'
 include 'user-service'
 include 'order-service'
 include 'product-service'
+include 'eureka-server'
+include 'gateway-server'
+
