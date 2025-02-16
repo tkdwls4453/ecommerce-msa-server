@@ -41,8 +41,8 @@ public class ApiResponse<T> {
     }
 
     // 실패 응답
-    public static <T> ApiResponse<T> failure(StatusCode code, String message, T errors) {
-        return createApiResponse(GlobalStatusCode.FAIL, code.getCode(), message, null, errors);
+    public static <T> ApiResponse<T> failure(String code, String message) {
+        return createApiResponse(GlobalStatusCode.FAIL, code, message, null, null);
     }
 
     public static <T> ApiResponse<T> failure(T errors) {

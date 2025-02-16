@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msa.user.adapter.in.web.dto.request.UserRegisterRequest;
 import com.msa.user.application.port.in.UserRegisterCommand;
 import com.msa.user.application.port.in.UserRegisterUseCase;
+import com.msa.user.application.port.out.UserReadPort;
 import com.msa.user.application.port.out.UserRegisterPort;
 import com.msa.user.domain.User;
 import org.junit.jupiter.api.DisplayName;
@@ -40,6 +41,9 @@ class UserRegisterControllerTest {
 
     @MockitoBean
     private UserRegisterPort userRegisterPort;
+
+    @MockitoBean
+    private UserReadPort userReadPort;
 
     @Nested
     @DisplayName("POST /auth/register")
