@@ -9,6 +9,7 @@
         </processorPath>
         <module name="ecommerce-msa-server.main" />
         <module name="ecommerce-msa-server.product-service.main" />
+        <module name="ecommerce-msa-server.order-service.main" />
         <module name="ecommerce-msa-server.user-service.main" />
         <module name="ecommerce-msa-server.common.main" />
       </profile>
