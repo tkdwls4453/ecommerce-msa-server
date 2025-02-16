@@ -32,6 +32,7 @@ class UserRegisterControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+
     @Autowired
     private ObjectMapper objectMapper;
 

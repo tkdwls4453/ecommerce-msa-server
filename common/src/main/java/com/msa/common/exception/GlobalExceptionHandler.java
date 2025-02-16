@@ -35,6 +35,19 @@ public class GlobalExceptionHandler {
             .body(ApiResponse.failure(errors));
     }
 
+    @ExceptionHandler(value = RedisParsingException.class)
+    public ResponseEntity<ApiResponse<Void>> handleRedisParsingException(RedisParsingException e) {
+
+        log.warn("Failed to parse Redis value. StringValue: '{}', Target Class Fields: '{}', Error Message: '{}'",
+                e.getValue(),
+                e.getClazz().getFields(),
+                e.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error());
+    }
+
     @ExceptionHandler(value = RuntimeException.class)
     public ResponseEntity<ApiResponse<Void>> handleRuntimeException(RuntimeException e) {
 
