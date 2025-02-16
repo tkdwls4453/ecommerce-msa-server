@@ -1,9 +1,12 @@
 package com.msa.entry.service;
 
+import com.msa.entry.dto.TimeDealCreateRequest;
+import com.msa.entry.dto.TimeDealResponse;
+import com.msa.entry.dto.TimeDealUpdateRequest;
 import com.msa.entry.entity.TimeDeal;
 import com.msa.entry.entity.TimeDealStatus;
+import com.msa.entry.repository.ModelRepository;
 import com.msa.entry.repository.TimeDealRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -26,6 +29,9 @@ class TimeDealServiceTest {
     @Mock
     private TimeDealRepository timeDealRepository;
 
+    @Mock
+    private ModelRepository modelRepository;
+
     @Test
     @DisplayName("타임딜 생성")
     void createTimeDeal() {
@@ -35,12 +41,23 @@ class TimeDealServiceTest {
                 LocalDateTime.now().plusHours(2),
                 100);
 
+        TimeDeal timeDeal = TimeDeal.builder()
+                .modelId(request.getModelId())
+                .startTime(request.getStartTime())
+                .endTime(request.getEndTime())
+                .quantity(request.getQuantity())
+                .build();
+
+        when(modelRepository.existsById(any(Long.class))).thenReturn(true);  // Mock 동작 추가
+        when(timeDealRepository.save(any(TimeDeal.class))).thenReturn(timeDeal);
+
         // when
         TimeDealResponse response = timeDealService.createTimeDeal(request);
 
         // then
         assertThat(response).isNotNull();
         verify(timeDealRepository).save(any(TimeDeal.class));
+        verify(modelRepository).existsById(any(Long.class));
     }
 
     @Test
@@ -49,7 +66,7 @@ class TimeDealServiceTest {
         // given
         Long timeDealId = 1L;
         TimeDeal timeDeal = TimeDeal.builder()
-                .productId(1L)
+                .modelId(1L)
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusHours(2))
                 .quantity(100)
@@ -63,7 +80,7 @@ class TimeDealServiceTest {
 
         // then
         assertThat(response).isNotNull();
-        assertThat(response.getProductId()).isEqualTo(timeDeal.getProductId());
+        assertThat(response.getModelId()).isEqualTo(timeDeal.getModelId());
         verify(timeDealRepository).findById(timeDealId);
     }
 
@@ -79,7 +96,7 @@ class TimeDealServiceTest {
         );
 
         TimeDeal timeDeal = TimeDeal.builder()
-                .productId(1L)
+                .modelId(1L)
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusHours(2))
                 .quantity(100)
@@ -103,7 +120,7 @@ class TimeDealServiceTest {
         // given
         Long timeDealId = 1L;
         TimeDeal timeDeal = TimeDeal.builder()
-                .productId(1L)
+                .modelId(1L)
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusHours(2))
                 .quantity(100)
@@ -126,7 +143,7 @@ class TimeDealServiceTest {
         // given
         Long timeDealId = 1L;
         TimeDeal timeDeal = TimeDeal.builder()
-                .productId(1L)
+                .modelId(1L)
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusHours(2))
                 .quantity(100)
@@ -147,13 +164,15 @@ class TimeDealServiceTest {
     @DisplayName("타임딜 종료")
     void endTimeDeal() {
         // given
-        Long timeDealId = 1L;
+        Long timeDealId = 2L;
         TimeDeal timeDeal = TimeDeal.builder()
-                .productId(1L)
+                .modelId(1L)
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusHours(2))
                 .quantity(100)
                 .build();
+
+        timeDeal.start(); // SCHEDULED -> ACTIVE 상태로 변경
 
         when(timeDealRepository.findById(timeDealId))
                 .thenReturn(Optional.of(timeDeal));
@@ -165,5 +184,6 @@ class TimeDealServiceTest {
         assertThat(response.getStatus()).isEqualTo(TimeDealStatus.ENDED);
         verify(timeDealRepository).findById(timeDealId);
     }
+
 
 }

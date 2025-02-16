@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 class EntryTest {
     @Test
@@ -13,7 +12,7 @@ class EntryTest {
     void createEntry(){
         //given
         TimeDeal timeDeal = TimeDeal.builder()
-                .productId(1L)
+                .modelId(1L)
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusHours(2))
                 .quantity(100)

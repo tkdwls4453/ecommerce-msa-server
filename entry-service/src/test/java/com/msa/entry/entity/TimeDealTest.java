@@ -19,14 +19,14 @@ class TimeDealTest {
 
         //when
         TimeDeal timeDeal = TimeDeal.builder()
-                .productId(productId)
+                .modelId(productId)
                 .startTime(startTime)
                 .endTime(endTime)
                 .quantity(quantity)
                 .build();
 
         //then
-        assertThat(timeDeal.getProductId()).isEqualTo(productId);
+        assertThat(timeDeal.getModelId()).isEqualTo(productId);
         assertThat(timeDeal.getStartTime()).isEqualTo(startTime);
         assertThat(timeDeal.getEndTime()).isEqualTo(endTime);
         assertThat(timeDeal.getQuantity()).isEqualTo(quantity);

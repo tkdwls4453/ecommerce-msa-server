@@ -22,7 +22,7 @@ public class Entry {
     @Enumerated(EnumType.STRING)
     private EntryStatus entryStatus;
 
-    protected Entry(){}
+    public Entry(){}
 
     @Builder
     private Entry(TimeDeal timeDeal, Long userId, LocalDateTime entryTime){

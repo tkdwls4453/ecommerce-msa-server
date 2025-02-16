@@ -43,6 +43,10 @@ dependencies {
     // H2
     runtimeOnly 'com.h2database:h2'
 
+    // Quartz
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+
+
     implementation project(':common')
 }
 

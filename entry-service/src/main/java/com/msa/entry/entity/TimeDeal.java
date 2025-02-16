@@ -15,7 +15,7 @@ public class TimeDeal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long timeDealId;
     @Column(nullable = false)
-    private Long productId;
+    private Long modelId;
     @Column(nullable = false)
     private LocalDateTime startTime;
     @Column(nullable = false)
@@ -29,13 +29,33 @@ public class TimeDeal {
     private List<Entry> entries = new ArrayList<>();
 
     @Builder
-    public TimeDeal(Long productId, LocalDateTime startTime,LocalDateTime endTime, int quantity){
-        this.productId = productId;
+    public TimeDeal(Long modelId, LocalDateTime startTime,LocalDateTime endTime, int quantity){
+        this.modelId = modelId;
         this.startTime = startTime;
         this.endTime = endTime;
         this.quantity = quantity;
         this.timeDealStatus = TimeDealStatus.SCHEDULED;
     }
 
-    protected TimeDeal() {}
+    public TimeDeal() {}
+
+    public void update(LocalDateTime startTime, LocalDateTime endTime, int quantity){
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.quantity = quantity;
+    }
+
+    public void start() {
+        if (this.timeDealStatus != timeDealStatus.SCHEDULED){
+            throw new IllegalStateException("이미 시작되었거나 종료된 타임딜");
+        }
+        this.timeDealStatus = TimeDealStatus.ACTIVE;
+    }
+
+    public void end(){
+        if (this.timeDealStatus != timeDealStatus.ACTIVE){
+            throw new IllegalStateException("진행중인 타임딜만 종료 가능");
+        }
+        this.timeDealStatus = TimeDealStatus.ENDED;
+    }
 }
