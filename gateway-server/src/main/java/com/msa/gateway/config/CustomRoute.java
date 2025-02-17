@@ -18,6 +18,8 @@ public class CustomRoute {
                 .uri("lb://user-service"))
             .route(p -> p.path("/order/**")
                 .uri("lb://order-service"))
+            .route(p -> p.path("/payments/**")
+                .uri("lb://payment-service"))
             .build();
     }
 }

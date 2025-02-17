@@ -94,6 +94,7 @@ services:
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
       - SPRING_JWT_SECRET=dudguswntjdtkdwlsdbstjrahenahencnldjqtjdrhd
+      - EUREKA_SERVER_HOST=eureka-server
 networks:
   msa_network:
     driver: bridge
