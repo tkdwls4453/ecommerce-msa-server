@@ -31,7 +31,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @InjectMocks
-    private OrderService sut;
+    private OrderCommandService sut;
 
     @Mock
     private DecreaseStockUseCase decreaseStockUseCase;
