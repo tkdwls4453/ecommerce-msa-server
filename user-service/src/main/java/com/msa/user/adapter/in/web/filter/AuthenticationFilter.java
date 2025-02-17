@@ -2,7 +2,7 @@ package com.msa.user.adapter.in.web.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msa.common.response.ApiResponse;
-import com.msa.common.utils.JwtUtil;
+import com.msa.jwt.JwtUtil;
 import com.msa.user.adapter.in.web.dto.request.UserLoginRequest;
 import com.msa.user.application.service.CustomUserDetailsService;
 import com.msa.user.exception.InvalidLoginException;
