@@ -1,4 +1,4 @@
-package com.msa.common.utils;
+package com.msa.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
