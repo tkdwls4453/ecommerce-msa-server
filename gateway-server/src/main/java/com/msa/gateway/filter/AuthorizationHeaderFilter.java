@@ -1,7 +1,7 @@
 package com.msa.gateway.filter;
 
-import com.msa.common.utils.JwtUtil;
 import com.msa.gateway.config.WhitelistUrls;
+import com.msa.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
