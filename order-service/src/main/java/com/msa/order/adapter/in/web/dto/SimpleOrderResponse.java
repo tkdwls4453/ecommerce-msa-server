@@ -1,7 +1,6 @@
 package com.msa.order.adapter.in.web.dto;
 
 import com.msa.order.domain.Order;
-import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
