@@ -1,14 +1,15 @@
 package com.msa.order.adapter.in.web;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.msa.order.application.port.in.PrepareOrderUseCase;
 import com.msa.order.application.port.in.OrderQueryUseCase;
 import com.msa.order.domain.Order;
 import com.msa.order.domain.OrderFixtures;
@@ -31,8 +32,11 @@ class OrderInternalControllerTest {
     @MockitoBean
     private OrderQueryUseCase orderQueryUseCase;
 
+    @MockitoBean
+    private PrepareOrderUseCase orderPrepareUseCase;
+
     @Nested
-    @DisplayName("Get /internal/orders/{orderId}")
+    @DisplayName("GET /internal/orders/{orderId}")
     class GetOrder{
 
         @Test
@@ -58,6 +62,28 @@ class OrderInternalControllerTest {
             ;
 
             verify(orderQueryUseCase, times(1)).getOrderById(orderId);
+        }
+    }
+
+    @Nested
+    @DisplayName("POST /internal/orders/{orderId}/preare")
+    class Prepare{
+
+        @Test
+        @DisplayName("주문 아이디로 주문 준비 진행 성공시, 200 OK 를 반환한다.")
+        void test2000() throws Exception {
+            // Given
+            Long orderId = 1L;
+
+            // When Then
+            mockMvc.perform(post("/internal/orders/{orderId}/prepare", "1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("SUCCESS"))
+                .andExpect(jsonPath("$.code").value("S200"))
+            ;
+
+            verify(orderPrepareUseCase, times(1)).prepare(orderId);
         }
     }
 }

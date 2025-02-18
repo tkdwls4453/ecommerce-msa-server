@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 import com.msa.order.application.port.in.CreateNewOrderCommand;
 import com.msa.order.application.port.out.ApplyCouponUseCase;
 import com.msa.order.application.port.out.DecreaseStockUseCase;
-import com.msa.order.application.port.out.OrderCreatePort;
+import com.msa.order.application.port.out.OrderCommandPort;
 import com.msa.order.domain.Order;
 import com.msa.order.domain.OrderFixtures;
 import com.msa.order.domain.OrderStatus;
@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class OrderServiceTest {
+class OrderCommandServiceTest {
 
     @InjectMocks
     private OrderCommandService sut;
@@ -40,7 +40,7 @@ class OrderServiceTest {
     private ApplyCouponUseCase applyCouponUseCase;
 
     @Mock
-    private OrderCreatePort orderCreatePort;
+    private OrderCommandPort orderCommandPort;
 
     /**
      * 주문 접수 서비스 기능
@@ -63,7 +63,7 @@ class OrderServiceTest {
             LocalDateTime orderTime = LocalDateTime.now();
             Order savedOrder = OrderFixtures.order(1L, OrderStatus.PAYMENT_PENDING, orderTime);
 
-            when(orderCreatePort.save(any(Order.class))).thenReturn(savedOrder);
+            when(orderCommandPort.save(any(Order.class))).thenReturn(savedOrder);
 
             // When
             Order result = sut.createNewOrder(1L, command);
@@ -71,7 +71,7 @@ class OrderServiceTest {
             // Then
             verify(decreaseStockUseCase, times(1)).decreaseStock(command.orderLine());
             verify(applyCouponUseCase, times(1)).applyCoupon(any(Money.class), any(Money.class), any(Long.class));
-            verify(orderCreatePort, times(1)).save(any(Order.class));
+            verify(orderCommandPort, times(1)).save(any(Order.class));
 
             assertThat(result).isNotNull();
             assertThat(result.getCustomerId()).isEqualTo(customerId);
@@ -96,7 +96,7 @@ class OrderServiceTest {
 
             verify(decreaseStockUseCase, times(1)).decreaseStock(command.orderLine());
             verify(applyCouponUseCase, times(0)).applyCoupon(any(Money.class), any(Money.class), any(Long.class));
-            verify(orderCreatePort, times(1)).save(any(Order.class));
+            verify(orderCommandPort, times(1)).save(any(Order.class));
         }
 
         @Test
@@ -117,7 +117,7 @@ class OrderServiceTest {
             verify(decreaseStockUseCase, times(1)).decreaseStock(command.orderLine());
             verify(applyCouponUseCase, times(1)).applyCoupon(any(Money.class), any(Money.class), any(Long.class));
             verify(decreaseStockUseCase, times(1)).rollback(command.orderLine());
-            verify(orderCreatePort, times(1)).save(any(Order.class));
+            verify(orderCommandPort, times(1)).save(any(Order.class));
         }
 
     }
