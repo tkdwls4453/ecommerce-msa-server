@@ -58,6 +58,10 @@ public class ApiResponse<T> {
         return createApiResponse(GlobalStatusCode.ERROR, GlobalStatusCode.ERROR.getCode(), GlobalStatusCode.ERROR.getMessage(), null, null);
     }
 
+    public static ApiResponse<Void> error(Exception e) {
+        return createApiResponse(GlobalStatusCode.ERROR, GlobalStatusCode.ERROR.getCode(), e.getMessage(), null, null);
+    }
+
     private static <T> ApiResponse<T> createApiResponse(StatusCode responseStatus, String code, String message, T data, T errors) {
         return ApiResponse.<T>builder()
             .status(responseStatus.toString())

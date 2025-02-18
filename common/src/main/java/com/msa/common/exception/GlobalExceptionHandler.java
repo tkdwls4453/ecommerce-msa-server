@@ -1,6 +1,7 @@
 package com.msa.common.exception;
 
 import com.msa.common.response.ApiResponse;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,8 @@ public class GlobalExceptionHandler {
                 e.getClazz().getFields(),
                 e.getMessage());
 
+        loggingStackTrace(e);
+
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error());
@@ -52,7 +55,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleRuntimeException(RuntimeException e) {
 
         log.info("UnexpectedError: Message = {}", e.getLocalizedMessage());
-
+        loggingStackTrace(e);
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ApiResponse.error());
@@ -62,9 +65,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
 
         log.info("Server Error: Message = {}",  e.getLocalizedMessage());
+        loggingStackTrace(e);
 
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(ApiResponse.error());
+            .body(ApiResponse.error(e));
+    }
+
+    private static void loggingStackTrace(Exception e) {
+        log.info("stack trace: {}", Arrays.toString(e.getStackTrace()));
     }
 }
