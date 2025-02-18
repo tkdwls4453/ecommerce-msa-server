@@ -46,18 +46,6 @@ class PaymentControllerTest {
     @MockitoBean
     private PaymentCommandUseCase paymentCommandUseCase;
 
-    @MockitoBean
-    private PaymentCommandPort paymentCommandPort;
-
-    @MockitoBean
-    private PaymentQueryPort paymentQueryPort;
-
-    @MockitoBean
-    private OrderQueryPort orderQueryPort;
-
-    @MockitoBean
-    private ExternalPaymentPort externalPaymentPort;
-
     /**
      * 결제 시도 api
      * 입력 :
