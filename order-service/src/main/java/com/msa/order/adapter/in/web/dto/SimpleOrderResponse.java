@@ -11,7 +11,7 @@ public record SimpleOrderResponse(
     Long customerId,
     String orderStatus,
     Integer totalPrice,
-    LocalDateTime orderTime
+    String orderTime
 ) {
 
     public static SimpleOrderResponse from(Order order) {
@@ -21,7 +21,7 @@ public record SimpleOrderResponse(
             .customerId(order.getCustomerId())
             .orderStatus(order.getOrderStatus().toString())
             .totalPrice(order.getTotalPrice().amount().intValue())
-            .orderTime(order.getOrderTime())
+            .orderTime(order.getOrderTime().toString())
             .build();
     }
 }
