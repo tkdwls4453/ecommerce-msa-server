@@ -13,7 +13,8 @@ public enum OrderErrorCode implements StatusCode {
     NO_ORDER_ITEM_ERROR(HttpStatus.BAD_REQUEST, "FOD403", "하나 이상의 주문 아이템이 필요합니다."),
     INVALID_COUPON_ERROR(HttpStatus.BAD_REQUEST, "FOD404", "유효하지 않은 쿠폰입니다."),
     OUT_OF_STOCK_ERROR(HttpStatus.BAD_REQUEST, "FOD405", "상품의 재고가 부족합니다."),
-    NOT_FOUND_ORDER_ERROR(HttpStatus.BAD_REQUEST, "FOD406", "존재하지 않는 상품입니다.");
+    NOT_FOUND_ORDER_ERROR(HttpStatus.BAD_REQUEST, "FOD406", "존재하지 않는 상품입니다."),
+    INVALID_ORDER_STATUS_ERROR(HttpStatus.BAD_REQUEST, "FOD407", "잘못된 주문 상태입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
