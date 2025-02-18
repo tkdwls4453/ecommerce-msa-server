@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class OrderService implements CreateNewOrderUseCase {
+public class OrderCommandService implements CreateNewOrderUseCase {
 
     private final DecreaseStockUseCase decreaseStockUseCase;
     private final ApplyCouponUseCase applyCouponUseCase;

@@ -70,7 +70,7 @@ class OrderControllerTest {
 
             // When Then
             mockMvc.perform(
-                    post("/order/new")
+                    post("/orders/new")
                         .param("userId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
@@ -102,7 +102,7 @@ class OrderControllerTest {
 
             // When Then
             mockMvc.perform(
-                    post("/order/new")
+                    post("/orders/new")
                         .param("userId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
@@ -129,7 +129,7 @@ class OrderControllerTest {
 
             // When Then
             mockMvc.perform(
-                    post("/order/new")
+                    post("/orders/new")
                         .param("userId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
@@ -156,7 +156,7 @@ class OrderControllerTest {
 
             // When Then
             mockMvc.perform(
-                    post("/order/new")
+                    post("/orders/new")
                         .param("userId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
@@ -183,7 +183,7 @@ class OrderControllerTest {
 
             // When Then
             mockMvc.perform(
-                    post("/order/new")
+                    post("/orders/new")
                         .param("userId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
