@@ -50,11 +50,17 @@ public class AuthorizationHeaderFilter implements GlobalFilter {
 
         String userId = String.valueOf(jwtUtil.getUserId(jwt));
 
+        log.info("userId: {}", userId);
+
         ServerHttpRequest modifiedRequest = request.mutate()
             .header("X-User-Id", userId)
             .build();
 
-        return chain.filter(exchange);
+        ServerWebExchange modifiedExchange = exchange.mutate()
+            .request(modifiedRequest)
+            .build();
+
+        return chain.filter(modifiedExchange);
     }
 
     private Mono<Void> onError(ServerWebExchange exchange, String message, HttpStatus httpStatus) {

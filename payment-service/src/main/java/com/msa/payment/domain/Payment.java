@@ -58,7 +58,7 @@ public class Payment {
     public void verifyAndPending(Long customerId, SimpleOrderResponse order, String paymentKey) {
         verifyCustomer(customerId, order);
         verifyOrder(customerId, order);
-        verifyAmount(order.totalPrice());
+        verifyAmount(new Money(order.totalPrice()));
 
         this.paymentKey = paymentKey;
         this.orderCode = order.orderCode();

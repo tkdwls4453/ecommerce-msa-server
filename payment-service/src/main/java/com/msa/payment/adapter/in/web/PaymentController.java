@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +30,7 @@ public class PaymentController {
 
     @PostMapping
     public ApiResponse<PaymentResponse> tryPayment(
-        @RequestParam(value = "customerId") Long customerId,
+        @RequestHeader("X-User-Id") Long customerId,
         @Valid @RequestBody CreatePaymentRequest request
     ){
         Payment initedPayment = paymentCommandUseCase.tryPayment(customerId, CreatePaymentCommand.from(request));
@@ -38,7 +39,7 @@ public class PaymentController {
 
     @PostMapping("/verify")
     public ApiResponse<PaymentResponse> verifyPayment(
-        @RequestParam(value = "customerId") Long customerId,
+        @RequestHeader("X-User-Id") Long customerId,
         @Valid @RequestBody VerifyPaymentRequest request
     ){
         Payment verifiedPayment = paymentCommandUseCase.verify(customerId, VerifyPaymentCommand.from(request));
