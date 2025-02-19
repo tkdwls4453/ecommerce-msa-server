@@ -3,16 +3,18 @@ package com.msa.common.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Getter
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
-    private final String status;
-    private final String code;
-    private final String message;
-    private final T data;
-    private final T errors;
+    private String status;
+    private String code;
+    private String message;
+    private T data;
+    private T errors;
 
     @Builder
     private ApiResponse(String status, String code, String message, T data, T errors) {
@@ -22,6 +24,7 @@ public class ApiResponse<T> {
         this.data = data;
         this.errors = errors;
     }
+
 
     // 성공 응답
     public static <T> ApiResponse<T> success(String message, T data) {
