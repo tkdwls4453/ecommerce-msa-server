@@ -1,13 +1,13 @@
 package com.msa.order.adapter.out.persistence;
 
-import com.msa.order.application.port.out.OrderCreatePort;
+import com.msa.order.application.port.out.OrderCommandPort;
 import com.msa.order.domain.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class OrderCommandAdapter implements OrderCreatePort {
+public class OrderCommandAdapter implements OrderCommandPort {
 
     private final OrderCommandJpaRepository orderCommandJpaRepository;
 

@@ -46,9 +46,21 @@ dependencies {
     // H2
     runtimeOnly 'com.h2database:h2'
 
-
+    // Eureka Client
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
     implementation project(':common')
+    implementation project(':jwt')
+}
+
+ext {
+    set('springCloudVersion', "2024.0.0")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 test {
@@ -61,7 +73,7 @@ tasks.named('test') {
 }
 
 jacoco {
-    toolVersion = '0.8.8'
+    toolVersion = '0.8.12'
 }
 
 jacocoTestReport {
@@ -74,7 +86,7 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, excludes: [
-                    '**/CicdPracticeApplication.class'
+                    '**/UserServiceApplication.class'
             ])
         }))
     }
@@ -90,7 +102,7 @@ jacocoTestCoverageVerification {
                 minimum = 0.80
             }
             excludes = [
-                    '**/CicdPracticeApplication.class'
+                    '**/UserServiceApplication.class'
             ]
         }
     }
@@ -102,4 +114,4 @@ docker {
     dockerfile file('../Dockerfile')
     files tasks.bootJar.outputs.files
     buildArgs(['JAR_FILE': tasks.bootJar.outputs.files.singleFile.name])
-}
+ }

@@ -16,7 +16,7 @@ import com.msa.order.application.port.in.CreateNewOrderCommand;
 import com.msa.order.application.port.in.CreateNewOrderUseCase;
 import com.msa.order.application.port.out.ApplyCouponUseCase;
 import com.msa.order.application.port.out.DecreaseStockUseCase;
-import com.msa.order.application.port.out.OrderCreatePort;
+import com.msa.order.application.port.out.OrderCommandPort;
 import com.msa.order.domain.Order;
 import com.msa.order.domain.OrderFixtures;
 import com.msa.order.domain.OrderStatus;
@@ -50,7 +50,7 @@ class OrderControllerTest {
     private DecreaseStockUseCase decreaseStockUseCase;
 
     @MockitoBean
-    private OrderCreatePort orderCreatePort;
+    private OrderCommandPort orderCreatePort;
 
     @Nested
     @DisplayName("POST /order/new")
@@ -70,7 +70,7 @@ class OrderControllerTest {
 
             // When Then
             mockMvc.perform(
-                    post("/order/new")
+                    post("/orders/new")
                         .param("userId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
@@ -102,7 +102,7 @@ class OrderControllerTest {
 
             // When Then
             mockMvc.perform(
-                    post("/order/new")
+                    post("/orders/new")
                         .param("userId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
@@ -129,7 +129,7 @@ class OrderControllerTest {
 
             // When Then
             mockMvc.perform(
-                    post("/order/new")
+                    post("/orders/new")
                         .param("userId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
@@ -156,7 +156,7 @@ class OrderControllerTest {
 
             // When Then
             mockMvc.perform(
-                    post("/order/new")
+                    post("/orders/new")
                         .param("userId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
@@ -183,7 +183,7 @@ class OrderControllerTest {
 
             // When Then
             mockMvc.perform(
-                    post("/order/new")
+                    post("/orders/new")
                         .param("userId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
