@@ -11,7 +11,7 @@ public class OrderFixtures {
             .orderCode("test_order_code")
             .customerId(1L)
             .orderStatus("PAYMENT_PENDING")
-            .totalPrice(new Money(30000))
+            .totalPrice(30000)
             .build();
     }
 
@@ -21,7 +21,7 @@ public class OrderFixtures {
             .orderCode("test_order_code")
             .customerId(1L)
             .orderStatus("ORDER_RECEIVED")
-            .totalPrice(new Money(30000))
+            .totalPrice(30000)
             .build();
     }
 
@@ -31,7 +31,7 @@ public class OrderFixtures {
             .orderCode("test_order_code")
             .customerId(customerId)
             .orderStatus("PAYMENT_PENDING")
-            .totalPrice(totalPrice)
+            .totalPrice(totalPrice.amount().intValue())
             .build();
     }
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/order")
+@RequestMapping("/orders")
 public class OrderController {
 
     private final CreateNewOrderUseCase createNewOrderUseCase;
@@ -27,7 +27,7 @@ public class OrderController {
         @RequestBody @Valid CreateNewOrderRequest request
     ){
         Order newOrder = createNewOrderUseCase.createNewOrder(userId, CreateNewOrderCommand.from(request));
-
         return ApiResponse.success(CreatedNewOrderResponse.from(newOrder));
     }
+
 }

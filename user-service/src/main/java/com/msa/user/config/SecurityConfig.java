@@ -1,7 +1,7 @@
 package com.msa.user.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.msa.common.utils.JwtUtil;
+import com.msa.jwt.JwtUtil;
 import com.msa.user.adapter.in.web.filter.AuthenticationFilter;
 import com.msa.user.application.service.CustomUserDetailsService;
 import jakarta.servlet.Filter;
