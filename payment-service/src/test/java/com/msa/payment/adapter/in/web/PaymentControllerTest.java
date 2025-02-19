@@ -82,7 +82,7 @@ class PaymentControllerTest {
             // When Then
             mockMvc.perform(
                 post("/payments")
-                    .param("customerId", "1")
+                    .header("X-User-Id", 1L)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(body)
             )
@@ -115,7 +115,7 @@ class PaymentControllerTest {
             // When Then
             mockMvc.perform(
                     post("/payments")
-                        .param("customerId", "1")
+                        .header("X-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                 )
@@ -141,7 +141,7 @@ class PaymentControllerTest {
             // When Then
             mockMvc.perform(
                     post("/payments")
-                        .param("customerId", "1")
+                        .header("X-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                 )
@@ -186,7 +186,7 @@ class PaymentControllerTest {
             // When Then
             mockMvc.perform(post("/payments/verify")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .param("customerId", "1")
+                    .header("X-User-Id", 1L)
                     .content(body)
                 )
                 .andDo(print())
@@ -223,7 +223,7 @@ class PaymentControllerTest {
 
             // When Then
             mockMvc.perform(post("/payments/verify")
-                    .param("customerId", "1")
+                    .header("X-User-Id", 1L)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(body)
                 )
