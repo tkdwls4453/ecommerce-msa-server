@@ -18,7 +18,7 @@ public class ProductFixtures {
             .build();
     }
 
-    public static ShoesModel shoesMode(Long modelId, String shoesName, int price) {
+    public static ShoesModel shoesModel(Long modelId, String shoesName, int price) {
 
         return ShoesModel.builder()
             .modelId(modelId)

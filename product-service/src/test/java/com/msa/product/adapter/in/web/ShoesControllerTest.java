@@ -48,7 +48,7 @@ class ShoesControllerTest {
             CreateShoesRequest request = ProductFixtures.createShoesRequest(modelName, price);
             String body = objectMapper.writeValueAsString(request);
 
-            ShoesModel shoesModel = ProductFixtures.shoesMode(1L,modelName, price);
+            ShoesModel shoesModel = ProductFixtures.shoesModel(1L,modelName, price);
             when(createShoesUseCase.createShoes(any(CreateShoesCommand.class)))
                 .thenReturn(shoesModel);
 
