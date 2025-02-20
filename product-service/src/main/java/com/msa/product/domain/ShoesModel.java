@@ -1,15 +1,23 @@
 package com.msa.product.domain;
 
-import com.msa.product.domain.vo.Price;
+import com.msa.common.vo.Money;
+import com.msa.product.domain.vo.ShoesName;
+import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public abstract class ShoesModel {
-
+public class ShoesModel {
     private Long modelId;
-    private Price price;
+    private ShoesName shoesName;
+    private Money price;
+    private List<Shoes> shoesList;
 
-    public long getPrice() {
-        return price.price();
+    @Builder
+    private ShoesModel(Long modelId, ShoesName shoesName, Money price, List<Shoes> shoesList) {
+        this.modelId = modelId;
+        this.shoesName = shoesName;
+        this.price = price;
+        this.shoesList = shoesList;
     }
 }
