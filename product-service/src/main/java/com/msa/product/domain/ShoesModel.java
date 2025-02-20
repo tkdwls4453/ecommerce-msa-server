@@ -1,6 +1,7 @@
 package com.msa.product.domain;
 
 import com.msa.common.vo.Money;
+import com.msa.product.application.port.in.CreateShoesCommand;
 import com.msa.product.domain.vo.ShoesName;
 import java.util.List;
 import lombok.Builder;
@@ -20,4 +21,13 @@ public class ShoesModel {
         this.price = price;
         this.shoesList = shoesList;
     }
+
+    public static ShoesModel generate(CreateShoesCommand command) {
+        return ShoesModel.builder()
+            .shoesName(command.shoesName())
+            .price(command.price())
+            .shoesList(command.shoesList())
+            .build();
+    }
+
 }
