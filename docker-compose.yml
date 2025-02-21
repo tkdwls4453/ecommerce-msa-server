@@ -107,7 +107,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=mysqluser
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
       - EUREKA_SERVER_HOST=eureka-server
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL=true
