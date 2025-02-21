@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: payment-service
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://admin:1234@${EUREKA_SERVER_HOST:localhost}:8761/eureka
+
+payment:
+  tosspayments:
+    secret-key: test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6
+    base-url: https://api.tosspayments.com/v1/payments
