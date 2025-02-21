@@ -3,7 +3,10 @@ package com.msa.product.domain;
 import com.msa.common.vo.Money;
 import com.msa.product.adapter.in.web.dto.CreateShoesRequest;
 import com.msa.product.adapter.in.web.dto.ShoesDto;
+import com.msa.product.adapter.out.persistence.ShoesEntity;
+import com.msa.product.adapter.out.persistence.ShoesModelEntity;
 import com.msa.product.domain.vo.ShoesName;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,4 +39,18 @@ public class ProductFixtures {
         shoesDtoList.add(new ShoesDto(2L, 270, "WHITE", 5));
         return shoesDtoList;
     }
+
+    public static ShoesModelEntity shoesModelEntity(long modelId, String shoesName, int price) {
+        return ShoesModelEntity.builder()
+            .modelId(modelId)
+            .shoesName(shoesName)
+            .price(new BigDecimal(price))
+            .shoesList(shoesDtoList().stream()
+                .map(ShoesDto::toDomain)
+                .map(ShoesEntity::from)
+                .toList()
+            )
+            .build();
+    }
+
 }
