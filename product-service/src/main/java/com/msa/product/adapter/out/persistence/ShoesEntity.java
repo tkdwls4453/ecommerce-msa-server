@@ -37,15 +37,16 @@ public class ShoesEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "model_id")
-
     private ShoesModelEntity shoesModel;
 
     @Builder
-    private ShoesEntity(Long shoesId, Size size, Color color, Integer quantity) {
+    private ShoesEntity(Long shoesId, Size size, Color color, Integer quantity,
+        ShoesModelEntity shoesModel) {
         this.shoesId = shoesId;
         this.size = size;
         this.color = color;
         this.quantity = quantity;
+        this.shoesModel = shoesModel;
     }
 
     public static ShoesEntity from(Shoes shoes) {
@@ -64,5 +65,9 @@ public class ShoesEntity {
             .color(color)
             .quantity(new Quantity(quantity))
             .build();
+    }
+
+    public void setModel(ShoesModelEntity shoesModelEntity) {
+        this.shoesModel = shoesModelEntity;
     }
 }

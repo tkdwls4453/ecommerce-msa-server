@@ -1,6 +1,7 @@
 package com.msa.product.adapter.out.persistence;
 
 import com.msa.common.vo.Money;
+import com.msa.product.domain.Shoes;
 import com.msa.product.domain.ShoesModel;
 import com.msa.product.domain.vo.ShoesName;
 import jakarta.persistence.CascadeType;
@@ -11,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,27 +30,32 @@ public class ShoesModelEntity {
     private BigDecimal price;
 
     @OneToMany(mappedBy = "shoesModel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ShoesEntity> shoesList;
+    private final List<ShoesEntity> shoesList = new ArrayList<>();
 
     @Builder
-    private ShoesModelEntity(Long modelId, String shoesName, BigDecimal price,
-        List<ShoesEntity> shoesList) {
+    private ShoesModelEntity(Long modelId, String shoesName, BigDecimal price) {
         this.modelId = modelId;
         this.shoesName = shoesName;
         this.price = price;
-        this.shoesList = shoesList;
     }
 
     public static ShoesModelEntity from(ShoesModel shoesModel) {
-        return ShoesModelEntity.builder()
+        ShoesModelEntity shoesModelEntity = ShoesModelEntity.builder()
             .modelId(shoesModel.getModelId())
             .shoesName(shoesModel.getShoesName().shoesName())
             .price(shoesModel.getPrice().amount())
-            .shoesList(shoesModel.getShoesList().stream()
-                .map(ShoesEntity::from)
-                .toList()
-            )
             .build();
+
+        for(Shoes shoes : shoesModel.getShoesList()) {
+            shoesModelEntity.addShoe(ShoesEntity.from(shoes));
+        }
+
+        return shoesModelEntity;
+    }
+
+    public void addShoe(ShoesEntity shoesEntity) {
+        this.shoesList.add(shoesEntity);
+        shoesEntity.setModel(this);
     }
 
     public ShoesModel toDomain() {
@@ -57,7 +64,7 @@ public class ShoesModelEntity {
             .shoesName(new ShoesName(shoesName))
             .price(new Money(price))
             .shoesList(this.shoesList.stream()
-                .map(shoesEntity -> shoesEntity.toDomain())
+                .map(ShoesEntity::toDomain)
                 .toList()
             )
             .build();
