@@ -6,7 +6,9 @@ import com.msa.product.application.port.out.ShoesSavePort;
 import com.msa.product.domain.ShoesModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class ShoesCommandService implements CreateShoesUseCase {
