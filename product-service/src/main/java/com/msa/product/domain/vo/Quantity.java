@@ -12,4 +12,8 @@ public record Quantity(
             throw new IllegalArgumentException();
         }
     }
+
+    public boolean isLessThen(Integer amount) {
+        return this.quantity < amount;
+    }
 }
