@@ -1,9 +1,7 @@
 package com.msa.product.application.service;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -97,6 +95,25 @@ class ShoesStockManageServiceTest {
         @DisplayName("존재하지 않는 상품으로 재고 감소 요청시 예외를 반환한다.")
         void test1(){
             // Given
+            OrderItem orderItem1 = OrderItem.builder()
+                .itemId(1L)
+                .quantity(2)
+                .build();
+
+            OrderItem orderItem2 = OrderItem.builder()
+                .itemId(2L)
+                .quantity(1)
+                .build();
+
+            OrderItem orderItem3 = OrderItem.builder()
+                .itemId(3L)
+                .quantity(1)
+                .build();
+
+            DecreaseStockRequest request = DecreaseStockRequest.builder()
+                .orderLine(Arrays.asList(orderItem1, orderItem2, orderItem3))
+                .build();
+
             DecreaseStockCommand command = DecreaseStockCommand.from(request);
 
             List<Long> idList = command.orderLine().stream()
@@ -105,7 +122,7 @@ class ShoesStockManageServiceTest {
 
             List<Shoes> shoesList = ProductFixtures.shoesList();
 
-            when(shoesQueryPort.findByIdIn(idList)).thenThrow(NotFoundShoesException.class);
+            when(shoesQueryPort.findByIdIn(idList)).thenReturn(shoesList);
 
             // When Then
             assertThatThrownBy(() -> sut.decreaseStock(command)).isInstanceOf(NotFoundShoesException.class);
