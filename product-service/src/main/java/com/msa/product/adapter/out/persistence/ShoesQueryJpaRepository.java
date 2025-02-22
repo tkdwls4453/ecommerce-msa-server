@@ -1,0 +1,7 @@
+package com.msa.product.adapter.out.persistence;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ShoesQueryJpaRepository extends JpaRepository<ShoesEntity, Long> {
+
+}
