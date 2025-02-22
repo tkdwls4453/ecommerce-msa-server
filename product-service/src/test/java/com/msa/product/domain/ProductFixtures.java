@@ -6,6 +6,7 @@ import com.msa.product.adapter.in.web.dto.ShoesDto;
 import com.msa.product.adapter.out.persistence.ShoesEntity;
 import com.msa.product.adapter.out.persistence.ShoesModelEntity;
 import com.msa.product.domain.vo.Color;
+import com.msa.product.domain.vo.Quantity;
 import com.msa.product.domain.vo.ShoesName;
 import com.msa.product.domain.vo.Size;
 import java.math.BigDecimal;
@@ -40,6 +41,27 @@ public class ProductFixtures {
         shoesDtoList.add(new ShoesDto(1L, 260, "BLACK", 10));
         shoesDtoList.add(new ShoesDto(2L, 270, "WHITE", 5));
         return shoesDtoList;
+    }
+
+    public static List<Shoes> shoesList(){
+        List<Shoes> shoesList = new ArrayList<>();
+        shoesList.add(
+            Shoes.builder()
+                .shoesId(1L)
+                .size(Size.fromInt(260))
+                .color(Color.BLACK)
+                .quantity(new Quantity(10))
+                .build()
+        );
+        shoesList.add(
+            Shoes.builder()
+                .shoesId(2L)
+                .size(Size.fromInt(270))
+                .color(Color.WHITE)
+                .quantity(new Quantity(5))
+                .build()
+        );
+        return shoesList;
     }
 
     public static ShoesModelEntity shoesModelEntity(long modelId, String shoesName, int price) {
