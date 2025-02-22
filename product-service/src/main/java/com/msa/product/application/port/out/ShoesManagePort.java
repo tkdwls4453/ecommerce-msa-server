@@ -5,7 +5,5 @@ import java.util.List;
 
 public interface ShoesManagePort {
 
-    void decreaseStock(Long shoesId, Integer quantity);
-
-    void saveAll(List<Shoes> shoesList);
+    List<Shoes> saveAll(List<Shoes> shoesList);
 }

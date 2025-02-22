@@ -6,6 +6,7 @@ import com.msa.product.application.port.in.ProductStockUseCase;
 import com.msa.product.application.port.out.ShoesManagePort;
 import com.msa.product.application.port.out.ShoesQueryPort;
 import com.msa.product.domain.Shoes;
+import com.msa.product.exception.NotFoundShoesException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,6 +29,10 @@ public class ShoesStockManageService implements ProductStockUseCase {
 
         List<Long> idList = orderQuantityMap.keySet().stream().toList();
         List<Shoes> shoesList = productQueryPort.findByIdIn(idList);
+
+        if(idList.size() != shoesList.size()) {
+            throw new NotFoundShoesException();
+        }
 
         shoesList.forEach(
             shoes -> shoes.decreaseQuantity(orderQuantityMap.get(shoes.getShoesId()))
