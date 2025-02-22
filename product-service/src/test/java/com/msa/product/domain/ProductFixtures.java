@@ -43,6 +43,27 @@ public class ProductFixtures {
         return shoesDtoList;
     }
 
+    public static List<ShoesEntity> shoesEntityList(){
+        List<ShoesEntity> shoesEntityList = new ArrayList<>();
+        shoesEntityList.add(
+            ShoesEntity.builder()
+                .shoesId(1L)
+                .size(Size.fromInt(260))
+                .color(Color.BLACK)
+                .quantity(10)
+                .build()
+        );
+        shoesEntityList.add(
+            ShoesEntity.builder()
+                .shoesId(2L)
+                .size(Size.fromInt(270))
+                .color(Color.WHITE)
+                .quantity(5)
+                .build()
+        );
+        return shoesEntityList;
+    }
+
     public static List<Shoes> shoesList(){
         List<Shoes> shoesList = new ArrayList<>();
         shoesList.add(
