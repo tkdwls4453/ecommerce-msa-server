@@ -7,8 +7,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.msa.product.adapter.in.web.dto.DecreaseStockRequest;
+import com.msa.product.adapter.in.web.dto.RollbackStockRequest;
 import com.msa.product.application.port.in.DecreaseStockCommand;
 import com.msa.product.application.port.in.OrderItem;
+import com.msa.product.application.port.in.RollbackStockCommand;
 import com.msa.product.application.port.out.ShoesQueryPort;
 import com.msa.product.application.port.out.ShoesStockManagePort;
 import com.msa.product.domain.ProductFixtures;
@@ -73,13 +75,13 @@ class ShoesStockManageServiceTest {
 
             List<Shoes> shoesList = ProductFixtures.shoesList();
 
-            when(shoesQueryPort.findByIdIn(idList)).thenReturn(shoesList);
+            when(shoesQueryPort.findByShoesIdInWithPessimisticLock(idList)).thenReturn(shoesList);
 
             // When
             sut.decreaseStock(command);
 
             // Then
-            verify(shoesQueryPort, times(1)).findByIdIn(idList);
+            verify(shoesQueryPort, times(1)).findByShoesIdInWithPessimisticLock(idList);
             verify(shoesStockManagePort, times(1)).updateStock(anyList());
         }
 
@@ -114,12 +116,12 @@ class ShoesStockManageServiceTest {
 
             List<Shoes> shoesList = ProductFixtures.shoesList();
 
-            when(shoesQueryPort.findByIdIn(idList)).thenReturn(shoesList);
+            when(shoesQueryPort.findByShoesIdInWithPessimisticLock(idList)).thenReturn(shoesList);
 
             // When Then
             assertThatThrownBy(() -> sut.decreaseStock(command)).isInstanceOf(NotFoundShoesException.class);
 
-            verify(shoesQueryPort, times(1)).findByIdIn(idList);
+            verify(shoesQueryPort, times(1)).findByShoesIdInWithPessimisticLock(idList);
             verify(shoesStockManagePort, times(0)).updateStock(anyList());
         }
 
@@ -149,11 +151,92 @@ class ShoesStockManageServiceTest {
 
             List<Shoes> shoesList = ProductFixtures.shoesList();
 
-            when(shoesQueryPort.findByIdIn(idList)).thenReturn(shoesList);
+            when(shoesQueryPort.findByShoesIdInWithPessimisticLock(idList)).thenReturn(shoesList);
 
             // When
             assertThatThrownBy(()-> sut.decreaseStock(command)).isInstanceOf(InsufficientStockException.class);
-            verify(shoesQueryPort, times(1)).findByIdIn(idList);
+            verify(shoesQueryPort, times(1)).findByShoesIdInWithPessimisticLock(idList);
+        }
+    }
+
+    @Nested
+    @DisplayName("[SERVICE] 재고 복구 테스트")
+    class RollbackStock{
+
+        OrderItem orderItem1 = OrderItem.builder()
+            .itemId(1L)
+            .quantity(2)
+            .build();
+
+        OrderItem orderItem2 = OrderItem.builder()
+            .itemId(2L)
+            .quantity(1)
+            .build();
+
+        RollbackStockRequest request = RollbackStockRequest.builder()
+            .orderLine(Arrays.asList(orderItem1, orderItem2))
+            .build();
+
+        @Test
+        @DisplayName("주문 상품 정보로 재고를 확인 후 감소시킨다.")
+        void test2000(){
+            // Given
+            RollbackStockCommand command = RollbackStockCommand.from(request);
+
+            List<Long> idList = command.orderLine().stream()
+                .map(OrderItem::itemId)
+                .toList();
+
+            List<Shoes> shoesList = ProductFixtures.shoesList();
+
+            when(shoesQueryPort.findByShoesIdInWithPessimisticLock(idList)).thenReturn(shoesList);
+
+            // When
+            sut.rollbackStock(command);
+
+            // Then
+            verify(shoesQueryPort, times(1)).findByShoesIdInWithPessimisticLock(idList);
+            verify(shoesStockManagePort, times(1)).updateStock(anyList());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 상품으로 재고 감소 요청시 예외를 반환한다.")
+        void test1(){
+            // Given
+            OrderItem orderItem1 = OrderItem.builder()
+                .itemId(1L)
+                .quantity(2)
+                .build();
+
+            OrderItem orderItem2 = OrderItem.builder()
+                .itemId(2L)
+                .quantity(1)
+                .build();
+
+            OrderItem orderItem3 = OrderItem.builder()
+                .itemId(3L)
+                .quantity(1)
+                .build();
+
+            RollbackStockRequest request = RollbackStockRequest.builder()
+                .orderLine(Arrays.asList(orderItem1, orderItem2, orderItem3))
+                .build();
+
+            RollbackStockCommand command = RollbackStockCommand.from(request);
+
+            List<Long> idList = command.orderLine().stream()
+                .map(OrderItem::itemId)
+                .toList();
+
+            List<Shoes> shoesList = ProductFixtures.shoesList();
+
+            when(shoesQueryPort.findByShoesIdInWithPessimisticLock(idList)).thenReturn(shoesList);
+
+            // When Then
+            assertThatThrownBy(() -> sut.rollbackStock(command)).isInstanceOf(NotFoundShoesException.class);
+
+            verify(shoesQueryPort, times(1)).findByShoesIdInWithPessimisticLock(idList);
+            verify(shoesStockManagePort, times(0)).updateStock(anyList());
         }
     }
 }

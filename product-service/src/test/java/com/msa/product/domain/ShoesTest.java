@@ -47,4 +47,26 @@ class ShoesTest {
                 .isInstanceOf(InsufficientStockException.class);
         }
     }
+
+    @Nested
+    @DisplayName("상품 재고 복구 테스트")
+    class RollbackQuantity{
+        @Test
+        @DisplayName("상품의 재고가 정상적으로 복구된다.")
+        void test2000(){
+            // Given
+            Shoes shoes = Shoes.builder()
+                .shoesId(1L)
+                .quantity(new Quantity(10))
+                .build();
+
+            Integer amount = 5;
+
+            // When
+            shoes.rollbackQuantity(amount);
+
+            // Then
+            assertThat(shoes.getQuantity()).isEqualTo(new Quantity(15));
+        }
+    }
 }
