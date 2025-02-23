@@ -9,8 +9,8 @@ import static org.mockito.Mockito.when;
 
 import com.msa.order.application.port.in.CreateNewOrderCommand;
 import com.msa.order.application.port.out.ApplyCouponUseCase;
-import com.msa.order.application.port.out.DecreaseStockUseCase;
 import com.msa.order.application.port.out.OrderCommandPort;
+import com.msa.order.application.port.out.ProductStockManagePort;
 import com.msa.order.domain.Order;
 import com.msa.order.domain.OrderFixtures;
 import com.msa.order.domain.OrderStatus;
@@ -34,7 +34,7 @@ class OrderCommandServiceTest {
     private OrderCommandService sut;
 
     @Mock
-    private DecreaseStockUseCase decreaseStockUseCase;
+    private ProductStockManagePort productStockManagePort;
 
     @Mock
     private ApplyCouponUseCase applyCouponUseCase;
@@ -69,7 +69,7 @@ class OrderCommandServiceTest {
             Order result = sut.createNewOrder(1L, command);
 
             // Then
-            verify(decreaseStockUseCase, times(1)).decreaseStock(command.orderLine());
+            verify(productStockManagePort, times(1)).decreaseStock(command.orderLine());
             verify(applyCouponUseCase, times(1)).applyCoupon(any(Money.class), any(Money.class), any(Long.class));
             verify(orderCommandPort, times(1)).save(any(Order.class));
 
@@ -87,14 +87,14 @@ class OrderCommandServiceTest {
             CreateNewOrderCommand command = CreateNewOrderCommand.from(OrderFixtures.newOrderWithFixedCouponRequest());
 
             doThrow(InsufficientStockException.class)
-                .when(decreaseStockUseCase)
+                .when(productStockManagePort)
                 .decreaseStock(ArgumentMatchers.anyList());
 
             // When Then
             assertThatThrownBy(() -> sut.createNewOrder(customerId, command))
                 .isInstanceOf(InsufficientStockException.class);
 
-            verify(decreaseStockUseCase, times(1)).decreaseStock(command.orderLine());
+            verify(productStockManagePort, times(1)).decreaseStock(command.orderLine());
             verify(applyCouponUseCase, times(0)).applyCoupon(any(Money.class), any(Money.class), any(Long.class));
             verify(orderCommandPort, times(1)).save(any(Order.class));
         }
@@ -114,9 +114,9 @@ class OrderCommandServiceTest {
             assertThatThrownBy(() -> sut.createNewOrder(customerId, command))
                 .isInstanceOf(InvalidCouponException.class);
 
-            verify(decreaseStockUseCase, times(1)).decreaseStock(command.orderLine());
+            verify(productStockManagePort, times(1)).decreaseStock(command.orderLine());
             verify(applyCouponUseCase, times(1)).applyCoupon(any(Money.class), any(Money.class), any(Long.class));
-            verify(decreaseStockUseCase, times(1)).rollback(command.orderLine());
+            verify(productStockManagePort, times(1)).rollback(command.orderLine());
             verify(orderCommandPort, times(1)).save(any(Order.class));
         }
 

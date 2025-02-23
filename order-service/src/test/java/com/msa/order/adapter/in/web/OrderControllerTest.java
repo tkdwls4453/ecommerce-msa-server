@@ -15,8 +15,8 @@ import com.msa.order.adapter.in.web.dto.CreateNewOrderRequest;
 import com.msa.order.application.port.in.CreateNewOrderCommand;
 import com.msa.order.application.port.in.CreateNewOrderUseCase;
 import com.msa.order.application.port.out.ApplyCouponUseCase;
-import com.msa.order.application.port.out.DecreaseStockUseCase;
 import com.msa.order.application.port.out.OrderCommandPort;
+import com.msa.order.application.port.out.ProductStockManagePort;
 import com.msa.order.domain.Order;
 import com.msa.order.domain.OrderFixtures;
 import com.msa.order.domain.OrderStatus;
@@ -42,15 +42,6 @@ class OrderControllerTest {
 
     @MockitoBean
     private CreateNewOrderUseCase createNewOrderUseCase;
-
-    @MockitoBean
-    private ApplyCouponUseCase applyCouponUseCase;
-
-    @MockitoBean
-    private DecreaseStockUseCase decreaseStockUseCase;
-
-    @MockitoBean
-    private OrderCommandPort orderCreatePort;
 
     @Nested
     @DisplayName("POST /order/new")

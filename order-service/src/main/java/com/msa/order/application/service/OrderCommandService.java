@@ -4,9 +4,9 @@ import com.msa.order.application.port.in.CreateNewOrderCommand;
 import com.msa.order.application.port.in.CreateNewOrderUseCase;
 import com.msa.order.application.port.in.PrepareOrderUseCase;
 import com.msa.order.application.port.out.ApplyCouponUseCase;
-import com.msa.order.application.port.out.DecreaseStockUseCase;
 import com.msa.order.application.port.out.OrderCommandPort;
 import com.msa.order.application.port.out.OrderQueryPort;
+import com.msa.order.application.port.out.ProductStockManagePort;
 import com.msa.order.domain.Order;
 import com.msa.order.exception.InsufficientStockException;
 import com.msa.order.exception.InvalidCouponException;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrderCommandService implements CreateNewOrderUseCase, PrepareOrderUseCase {
 
-    private final DecreaseStockUseCase decreaseStockUseCase;
+    private final ProductStockManagePort productStockManagePort;
     private final ApplyCouponUseCase applyCouponUseCase;
     private final OrderCommandPort orderCommandPort;
     private final OrderQueryPort orderQueryPort;
@@ -33,8 +33,12 @@ public class OrderCommandService implements CreateNewOrderUseCase, PrepareOrderU
         Order order = Order.init(userId, command, orderTime, Order.generateOrderCode());
 
         try{
-            decreaseStockUseCase.decreaseStock(order.getOrderLine());
-            applyCouponUseCase.applyCoupon(order.getOriginalTotalPrice(), order.getTotalPrice(), order.getAppliedCouponId());
+            productStockManagePort.decreaseStock(order.getOrderLine());
+
+            if(command.coupon() != null){
+                applyCouponUseCase.applyCoupon(order.getOriginalTotalPrice(), order.getTotalPrice(), order.getAppliedCouponId());
+            }
+
             order.process();
         }catch (InsufficientStockException e){
             order.fail();
@@ -42,7 +46,7 @@ public class OrderCommandService implements CreateNewOrderUseCase, PrepareOrderU
             throw e;
         }catch (InvalidCouponException e){
             order.fail();
-            decreaseStockUseCase.rollback(order.getOrderLine());
+            productStockManagePort.rollback(order.getOrderLine());
             orderCommandPort.save(order);
             throw e;
         }
