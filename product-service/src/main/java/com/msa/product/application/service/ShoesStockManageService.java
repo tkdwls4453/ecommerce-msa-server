@@ -3,6 +3,7 @@ package com.msa.product.application.service;
 import com.msa.product.application.port.in.DecreaseStockCommand;
 import com.msa.product.application.port.in.OrderItem;
 import com.msa.product.application.port.in.ProductStockUseCase;
+import com.msa.product.application.port.in.RollbackStockCommand;
 import com.msa.product.application.port.out.ShoesQueryPort;
 import com.msa.product.application.port.out.ShoesStockManagePort;
 import com.msa.product.domain.Shoes;
@@ -43,5 +44,10 @@ public class ShoesStockManageService implements ProductStockUseCase {
         );
 
         shoesStockManagePort.updateStock(shoesList);
+    }
+
+    @Override
+    public void rollbackStock(RollbackStockCommand command) {
+
     }
 }

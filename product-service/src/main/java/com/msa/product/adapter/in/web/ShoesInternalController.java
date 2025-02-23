@@ -5,6 +5,7 @@ import com.msa.product.adapter.in.web.dto.DecreaseStockRequest;
 import com.msa.product.adapter.in.web.dto.RollbackStockRequest;
 import com.msa.product.application.port.in.DecreaseStockCommand;
 import com.msa.product.application.port.in.ProductStockUseCase;
+import com.msa.product.application.port.in.RollbackStockCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,14 @@ public class ShoesInternalController {
         @Valid @RequestBody DecreaseStockRequest request
     ){
         productStockUseCase.decreaseStock(DecreaseStockCommand.from(request));
+        return ApiResponse.success();
+    }
+
+    @PostMapping("/stock/rollback")
+    ApiResponse<Void> rollbackStock(
+        @Valid @RequestBody RollbackStockRequest request
+    ){
+        productStockUseCase.rollbackStock(RollbackStockCommand.from(request));
         return ApiResponse.success();
     }
 }
