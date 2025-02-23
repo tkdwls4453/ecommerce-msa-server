@@ -2,6 +2,7 @@ package com.msa.user.application.service;
 
 import com.msa.user.application.port.in.UserRegisterCommand;
 import com.msa.user.application.port.in.UserRegisterUseCase;
+import com.msa.user.application.port.out.UserReadPort;
 import com.msa.user.application.port.out.UserRegisterPort;
 import com.msa.user.domain.User;
 import com.msa.user.exception.DuplicateEmailException;
@@ -13,13 +14,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserAuthService implements UserRegisterUseCase {
     private final UserRegisterPort userRegisterPort;
+    private final UserReadPort userReadPort;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public User register(UserRegisterCommand userRegisterCommand) {
         String encodedPassword = bCryptPasswordEncoder.encode(userRegisterCommand.password());
 
-        if(userRegisterPort.existsByEmail(userRegisterCommand.email())) {
+        if(userReadPort.existsByEmail(userRegisterCommand.email())) {
             throw new DuplicateEmailException();
         }
 
