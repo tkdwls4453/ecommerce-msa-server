@@ -1,9 +1,9 @@
 package com.msa.product.application.port.out;
 
-import com.msa.product.domain.Shoes;
+import com.msa.product.domain.ShoesModel;
 
 public interface ShoesSavePort {
 
-    Shoes save();
+    ShoesModel save(ShoesModel shoesModel);
 
 }

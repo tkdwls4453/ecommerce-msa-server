@@ -1,12 +1,11 @@
 package com.msa.order.adapter.out;
 
-import com.msa.order.application.port.out.DecreaseStockUseCase;
+import com.msa.order.application.port.out.ProductStockManagePort;
 import com.msa.order.domain.vo.OrderItem;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
-@Component
-public class FakeDecreaseStockAdapter implements DecreaseStockUseCase {
+public class FakeDecreaseStockAdapter implements ProductStockManagePort {
 
     @Override
     public void decreaseStock(List<OrderItem> orderLine) {

@@ -3,7 +3,7 @@ package com.msa.order.application.port.out;
 import com.msa.order.domain.vo.OrderItem;
 import java.util.List;
 
-public interface DecreaseStockUseCase {
+public interface ProductStockManagePort {
 
     void decreaseStock(List<OrderItem> orderLine);
 
