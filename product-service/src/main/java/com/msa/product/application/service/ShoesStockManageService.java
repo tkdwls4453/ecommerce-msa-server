@@ -48,6 +48,22 @@ public class ShoesStockManageService implements ProductStockUseCase {
 
     @Override
     public void rollbackStock(RollbackStockCommand command) {
+        Map<Long, Integer> orderQuantityMap = command.orderLine().stream()
+            .collect(Collectors.toMap(OrderItem::itemId, OrderItem::quantity));
 
+        List<Long> idList = orderQuantityMap.keySet().stream().toList();
+
+        // 조회하면서 락 획득 (비관적 락)
+        List<Shoes> shoesList = shoesQueryPort.findByShoesIdInWithPessimisticLock(idList);
+
+        if(idList.size() != shoesList.size()) {
+            throw new NotFoundShoesException();
+        }
+
+        shoesList.forEach(
+            shoes -> shoes.rollbackQuantity(orderQuantityMap.get(shoes.getShoesId()))
+        );
+
+        shoesStockManagePort.updateStock(shoesList);
     }
 }

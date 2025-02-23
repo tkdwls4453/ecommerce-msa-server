@@ -33,4 +33,8 @@ public class Shoes {
 
         this.quantity = new Quantity(this.quantity.quantity() - amount);
     }
+
+    public void rollbackQuantity(Integer amount) {
+        this.quantity = new Quantity(this.quantity.quantity() + amount);
+    }
 }
