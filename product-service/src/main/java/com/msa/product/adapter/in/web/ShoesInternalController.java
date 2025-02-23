@@ -2,6 +2,7 @@ package com.msa.product.adapter.in.web;
 
 import com.msa.common.response.ApiResponse;
 import com.msa.product.adapter.in.web.dto.DecreaseStockRequest;
+import com.msa.product.adapter.in.web.dto.RollbackStockRequest;
 import com.msa.product.application.port.in.DecreaseStockCommand;
 import com.msa.product.application.port.in.ProductStockUseCase;
 import jakarta.validation.Valid;

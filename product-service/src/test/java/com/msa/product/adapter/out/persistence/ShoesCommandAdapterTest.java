@@ -1,18 +1,15 @@
 package com.msa.product.adapter.out.persistence;
 
-
-
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import com.msa.product.domain.ProductFixtures;
 import com.msa.product.domain.Shoes;
 import com.msa.product.domain.ShoesModel;
-import com.msa.product.domain.vo.Color;
-import com.msa.product.domain.vo.Quantity;
-import com.msa.product.domain.vo.Size;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -61,27 +58,20 @@ class ShoesCommandAdapterTest {
     }
 
     @Nested
-    @DisplayName("여러 신발 정보 저장 테스트")
-    class SaveAll{
+    @DisplayName("신발 재고 업데이트 테스트")
+    class UpdateStock{
         @Test
-        @DisplayName("여러 건의 신발 정보를 저장 후 도메인으로 변경하여 반환한다.")
+        @DisplayName("신발 정보 리스트로 신발 재고를 업데이트한다.")
         void test2000(){
             // Given
             List<Shoes> shoesList = ProductFixtures.shoesList();
-            List<ShoesEntity> shoesEntityList = ProductFixtures.shoesEntityList();
-
-            when(shoesCommandJpaRepository.saveAll(anyList())).thenReturn(shoesEntityList);
 
             // When
-            List<Shoes> result = sut.saveAll(shoesList);
+            sut.updateStock(shoesList);
 
             // Then
-            assertThat(result).hasSize(2)
-                .extracting("shoesId", "size", "color", "quantity")
-                .contains(
-                    tuple(1L, Size.SIZE_260, Color.BLACK, new Quantity(10)),
-                    tuple(2L, Size.SIZE_270, Color.WHITE, new Quantity(5))
-                );
+            verify(shoesCommandJpaRepository, times(2)).updateStock(anyLong(), anyInt());
         }
     }
+
 }

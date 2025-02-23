@@ -3,8 +3,8 @@ package com.msa.product.application.service;
 import com.msa.product.application.port.in.DecreaseStockCommand;
 import com.msa.product.application.port.in.OrderItem;
 import com.msa.product.application.port.in.ProductStockUseCase;
-import com.msa.product.application.port.out.ShoesManagePort;
 import com.msa.product.application.port.out.ShoesQueryPort;
+import com.msa.product.application.port.out.ShoesStockManagePort;
 import com.msa.product.domain.Shoes;
 import com.msa.product.exception.NotFoundShoesException;
 import java.util.List;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShoesStockManageService implements ProductStockUseCase {
 
     private final ShoesQueryPort productQueryPort;
-    private final ShoesManagePort shoesManagePort;
+    private final ShoesStockManagePort shoesStockManagePort;
 
     @Override
     public void decreaseStock(DecreaseStockCommand command) {
@@ -38,6 +38,6 @@ public class ShoesStockManageService implements ProductStockUseCase {
             shoes -> shoes.decreaseQuantity(orderQuantityMap.get(shoes.getShoesId()))
         );
 
-        shoesManagePort.saveAll(shoesList);
+        shoesStockManagePort.updateStock(shoesList);
     }
 }

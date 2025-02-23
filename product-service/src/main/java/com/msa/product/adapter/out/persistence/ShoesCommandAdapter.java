@@ -1,7 +1,7 @@
 package com.msa.product.adapter.out.persistence;
 
-import com.msa.product.application.port.out.ShoesManagePort;
 import com.msa.product.application.port.out.ShoesSavePort;
+import com.msa.product.application.port.out.ShoesStockManagePort;
 import com.msa.product.domain.Shoes;
 import com.msa.product.domain.ShoesModel;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-public class ShoesCommandAdapter implements ShoesSavePort, ShoesManagePort {
+public class ShoesCommandAdapter implements ShoesSavePort, ShoesStockManagePort {
 
     private final ShoesModelCommandJpaRepository shoesModelCommandJpaRepository;
     private final ShoesCommandJpaRepository shoesCommandJpaRepository;
@@ -24,9 +24,8 @@ public class ShoesCommandAdapter implements ShoesSavePort, ShoesManagePort {
     }
 
     @Override
-    public List<Shoes> saveAll(List<Shoes> shoesList) {
-        List<ShoesEntity> shoesEntityList = shoesList.stream().map(ShoesEntity::from).toList();
-        return shoesCommandJpaRepository.saveAll(shoesEntityList).stream()
-            .map(ShoesEntity::toDomain).toList();
+    public void updateStock(List<Shoes> shoesList) {
+        shoesList.forEach(shoes -> shoesCommandJpaRepository.updateStock(shoes.getShoesId(),
+            shoes.getQuantity().quantity()));
     }
 }

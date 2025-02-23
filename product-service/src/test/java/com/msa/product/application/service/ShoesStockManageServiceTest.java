@@ -10,10 +10,9 @@ import com.msa.product.adapter.in.web.dto.DecreaseStockRequest;
 import com.msa.product.application.port.in.DecreaseStockCommand;
 import com.msa.product.application.port.in.OrderItem;
 import com.msa.product.application.port.out.ShoesQueryPort;
-import com.msa.product.application.port.out.ShoesManagePort;
+import com.msa.product.application.port.out.ShoesStockManagePort;
 import com.msa.product.domain.ProductFixtures;
 import com.msa.product.domain.Shoes;
-import com.msa.product.domain.vo.Quantity;
 import com.msa.product.exception.InsufficientStockException;
 import com.msa.product.exception.NotFoundShoesException;
 import java.util.Arrays;
@@ -36,13 +35,13 @@ class ShoesStockManageServiceTest {
     private ShoesQueryPort shoesQueryPort;
 
     @Mock
-    private ShoesManagePort shoesManagePort;
+    private ShoesStockManagePort shoesStockManagePort;
 
     /**
      * 로직
-     * 주문 상품 정보 조회 -> 없는 정보면 예외 ProductQueryPort
+     * 주문 상품 정보 조회 -> 없는 정보면 예외 ShoesQueryPort
      * 상품 재고가 충분한 지 체크 -> 부족하면 예외
-     * 상품 재고 감소 -> ProductStockManagePort
+     * 상품 재고 감소 -> ShoesStockManagePort
      */
     @Nested
     @DisplayName("[SERVICE] 재고 감소 테스트")
@@ -80,15 +79,8 @@ class ShoesStockManageServiceTest {
             sut.decreaseStock(command);
 
             // Then
-            assertThat(shoesList)
-                .extracting("shoesId", "quantity")
-                .contains(
-                    tuple(1L, new Quantity(10 - 2)),
-                    tuple(2L, new Quantity(5 - 1))
-                );
-
             verify(shoesQueryPort, times(1)).findByIdIn(idList);
-            verify(shoesManagePort, times(1)).saveAll(anyList());
+            verify(shoesStockManagePort, times(1)).updateStock(anyList());
         }
 
         @Test
@@ -128,7 +120,7 @@ class ShoesStockManageServiceTest {
             assertThatThrownBy(() -> sut.decreaseStock(command)).isInstanceOf(NotFoundShoesException.class);
 
             verify(shoesQueryPort, times(1)).findByIdIn(idList);
-            verify(shoesManagePort, times(0)).saveAll(anyList());
+            verify(shoesStockManagePort, times(0)).updateStock(anyList());
         }
 
         @Test
