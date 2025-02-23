@@ -14,9 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msa.order.adapter.in.web.dto.CreateNewOrderRequest;
 import com.msa.order.application.port.in.CreateNewOrderCommand;
 import com.msa.order.application.port.in.CreateNewOrderUseCase;
-import com.msa.order.application.port.out.ApplyCouponUseCase;
-import com.msa.order.application.port.out.OrderCommandPort;
-import com.msa.order.application.port.out.ProductStockManagePort;
 import com.msa.order.domain.Order;
 import com.msa.order.domain.OrderFixtures;
 import com.msa.order.domain.OrderStatus;
@@ -62,7 +59,7 @@ class OrderControllerTest {
             // When Then
             mockMvc.perform(
                     post("/orders/new")
-                        .param("userId", "1")
+                        .header("X-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                 )
@@ -94,7 +91,7 @@ class OrderControllerTest {
             // When Then
             mockMvc.perform(
                     post("/orders/new")
-                        .param("userId", "1")
+                        .header("X-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                 )
@@ -121,7 +118,7 @@ class OrderControllerTest {
             // When Then
             mockMvc.perform(
                     post("/orders/new")
-                        .param("userId", "1")
+                        .header("X-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                 )
@@ -148,7 +145,7 @@ class OrderControllerTest {
             // When Then
             mockMvc.perform(
                     post("/orders/new")
-                        .param("userId", "1")
+                        .header("X-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                 )
@@ -175,7 +172,7 @@ class OrderControllerTest {
             // When Then
             mockMvc.perform(
                     post("/orders/new")
-                        .param("userId", "1")
+                        .header("X-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
                 )
