@@ -10,8 +10,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,7 +23,7 @@ public class OrderController {
 
     @PostMapping("/new")
     public ApiResponse<CreatedNewOrderResponse> newOrder(
-        @RequestParam Long userId,
+        @RequestHeader("X-User-Id") Long userId,
         @RequestBody @Valid CreateNewOrderRequest request
     ){
         Order newOrder = createNewOrderUseCase.createNewOrder(userId, CreateNewOrderCommand.from(request));
