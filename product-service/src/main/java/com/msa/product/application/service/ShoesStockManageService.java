@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ShoesStockManageService implements ProductStockUseCase {
 
-    private final ShoesQueryPort productQueryPort;
+    private final ShoesQueryPort shoesQueryPort;
     private final ShoesStockManagePort shoesStockManagePort;
 
     @Override
@@ -28,7 +28,11 @@ public class ShoesStockManageService implements ProductStockUseCase {
             .collect(Collectors.toMap(OrderItem::itemId, OrderItem::quantity));
 
         List<Long> idList = orderQuantityMap.keySet().stream().toList();
-        List<Shoes> shoesList = productQueryPort.findByIdIn(idList);
+
+//        List<Shoes> shoesList = shoesQueryPort.findByIdIn(idList);
+
+        // 조회하면서 락 획득 (비관적 락)
+        List<Shoes> shoesList = shoesQueryPort.findByShoesIdInWithPessimisticLock(idList);
 
         if(idList.size() != shoesList.size()) {
             throw new NotFoundShoesException();

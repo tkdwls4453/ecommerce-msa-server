@@ -20,4 +20,11 @@ public class ShoesQueryAdapter implements ShoesQueryPort {
             .map(ShoesEntity::toDomain).toList();
     }
 
+    @Override
+    public List<Shoes> findByShoesIdInWithPessimisticLock(List<Long> idList) {
+        List<ShoesEntity> shoesEntityList = shoesQueryJpaRepository.findByShoesIdInWithPessimisticLock(idList);
+        return shoesEntityList.stream()
+            .map(ShoesEntity::toDomain).toList();
+    }
+
 }
