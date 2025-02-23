@@ -16,11 +16,4 @@ eureka:
     register-with-eureka: false
     fetch-registry: false
 
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: DEBUG
-        orm:
-          jdbc:
-            bind: TRACE
+

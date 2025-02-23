@@ -14,6 +14,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,11 @@ public class StockIntegrationTest {
 
     @Autowired
     private ShoesQueryJpaRepository shoesQueryJpaRepository;
+
+    @AfterEach
+    void tearDown() {
+        shoesCommandJpaRepository.deleteAllInBatch();
+    }
 
     @Nested
     @DisplayName("신발 재고 관련 동시성 테스트")

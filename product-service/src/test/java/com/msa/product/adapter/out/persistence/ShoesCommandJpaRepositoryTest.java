@@ -7,6 +7,7 @@ import com.msa.product.domain.vo.Size;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,11 @@ class ShoesCommandJpaRepositoryTest {
 
     @Autowired
     private ShoesCommandJpaRepository shoesCommandJpaRepository;
+
+    @AfterEach
+    void tearDown() {
+        shoesCommandJpaRepository.deleteAllInBatch();
+    }
 
     @Nested
     @DisplayName("신발 재고 업데이트 테스트")
@@ -40,7 +46,7 @@ class ShoesCommandJpaRepositoryTest {
         void test2000(){
             // Given
             List<ShoesEntity> shoesEntityList = Arrays.asList(shoesEntity1, shoesEntity2);
-            shoesCommandJpaRepository.saveAll(shoesEntityList);
+            shoesCommandJpaRepository.saveAllAndFlush(shoesEntityList);
 
 
             // When
