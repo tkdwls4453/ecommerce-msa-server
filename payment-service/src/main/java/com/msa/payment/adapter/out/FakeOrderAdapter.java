@@ -7,7 +7,7 @@ import com.msa.payment.application.port.out.dto.SimpleOrderResponse;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
-@Component
+
 public class FakeOrderAdapter implements OrderQueryPort, OrderCommandPort {
 
     @Override
@@ -17,8 +17,8 @@ public class FakeOrderAdapter implements OrderQueryPort, OrderCommandPort {
             .orderCode("test_order_code")
             .customerId(1L)
             .orderStatus("PAYMENT_PENDING")
-            .totalPrice(new Money(50000))
-            .orderTime(LocalDateTime.now())
+            .totalPrice(50000)
+            .orderTime(LocalDateTime.now().toString())
             .build();
     }
 

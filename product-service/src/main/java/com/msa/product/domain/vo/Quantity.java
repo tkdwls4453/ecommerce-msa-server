@@ -1,8 +1,5 @@
 package com.msa.product.domain.vo;
 
-import jakarta.persistence.Embeddable;
-
-@Embeddable
 public record Quantity(
         int quantity
 ) {
@@ -14,5 +11,9 @@ public record Quantity(
         if (value < 0) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public boolean isLessThen(Integer amount) {
+        return this.quantity < amount;
     }
 }

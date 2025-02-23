@@ -4,28 +4,37 @@ import com.msa.product.domain.vo.Color;
 import com.msa.product.domain.vo.Quantity;
 import com.msa.product.domain.vo.ShoesName;
 import com.msa.product.domain.vo.Size;
+import com.msa.product.exception.InsufficientStockException;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Objects;
 
 @Getter
-public class Shoes extends ShoesModel {
+public class Shoes {
 
     private Long shoesId;
-    private ShoesName shoesName;
     private Size size;
     private Color color;
     private Quantity quantity;
 
-    public String getShoesName() {
-        return shoesName.shoesName();
+    @Builder
+    private Shoes(Long shoesId, Size size, Color color, Quantity quantity) {
+        this.shoesId = shoesId;
+        this.size = size;
+        this.color = color;
+        this.quantity = quantity;
     }
 
-    public long getQuantity() {
-        return quantity.quantity();
+    public void decreaseQuantity(Integer amount) {
+        if (quantity.isLessThen(amount)) {
+            throw new InsufficientStockException();
+        }
+
+        this.quantity = new Quantity(this.quantity.quantity() - amount);
     }
 
-    public boolean isBaseShoes() {
-        return Objects.equals(shoesId, super.getModelId());
+    public void rollbackQuantity(Integer amount) {
+        this.quantity = new Quantity(this.quantity.quantity() + amount);
     }
 }
