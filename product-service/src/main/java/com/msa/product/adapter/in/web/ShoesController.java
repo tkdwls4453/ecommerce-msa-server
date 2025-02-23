@@ -27,4 +27,6 @@ public class ShoesController {
         ShoesModel shoes = createShoesUseCase.createShoes(CreateShoesCommand.from(request));
         return ApiResponse.success(CreatedShoesResponse.from(shoes));
     }
+
+
 }

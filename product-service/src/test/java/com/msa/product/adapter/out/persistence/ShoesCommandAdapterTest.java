@@ -1,18 +1,16 @@
 package com.msa.product.adapter.out.persistence;
 
-
-
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import com.msa.common.response.ApiResponse;
 import com.msa.product.domain.ProductFixtures;
 import com.msa.product.domain.Shoes;
 import com.msa.product.domain.ShoesModel;
-import com.msa.product.domain.vo.ShoesName;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,6 +27,9 @@ class ShoesCommandAdapterTest {
 
     @Mock
     private ShoesModelCommandJpaRepository shoesModelCommandJpaRepository;
+
+    @Mock
+    private ShoesCommandJpaRepository shoesCommandJpaRepository;
 
     @Nested
     @DisplayName("신발 정보 저장 테스트")
@@ -55,4 +56,22 @@ class ShoesCommandAdapterTest {
             assertThat(shoesList).hasSize(2);
         }
     }
+
+    @Nested
+    @DisplayName("신발 재고 업데이트 테스트")
+    class UpdateStock{
+        @Test
+        @DisplayName("신발 정보 리스트로 신발 재고를 업데이트한다.")
+        void test2000(){
+            // Given
+            List<Shoes> shoesList = ProductFixtures.shoesList();
+
+            // When
+            sut.updateStock(shoesList);
+
+            // Then
+            verify(shoesCommandJpaRepository, times(2)).updateStock(anyLong(), anyInt());
+        }
+    }
+
 }
