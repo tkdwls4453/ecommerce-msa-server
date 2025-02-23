@@ -156,5 +156,4 @@ class ShoesStockManageServiceTest {
             verify(shoesQueryPort, times(1)).findByIdIn(idList);
         }
     }
-
 }
