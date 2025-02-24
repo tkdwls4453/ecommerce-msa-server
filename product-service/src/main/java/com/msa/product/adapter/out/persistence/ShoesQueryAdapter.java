@@ -3,6 +3,7 @@ package com.msa.product.adapter.out.persistence;
 import com.msa.product.application.port.out.ShoesQueryPort;
 import com.msa.product.domain.Shoes;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -25,6 +26,11 @@ public class ShoesQueryAdapter implements ShoesQueryPort {
         List<ShoesEntity> shoesEntityList = shoesQueryJpaRepository.findByShoesIdInWithPessimisticLock(idList);
         return shoesEntityList.stream()
             .map(ShoesEntity::toDomain).toList();
+    }
+
+    @Override
+    public Optional<Shoes> findById(Long shoesId) {
+        return shoesQueryJpaRepository.findById(shoesId).map(ShoesEntity::toDomain);
     }
 
 }
