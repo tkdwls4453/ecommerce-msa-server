@@ -1,5 +1,6 @@
 package com.msa.entry.controller;
 
+import com.msa.common.response.ApiResponse;
 import com.msa.entry.dto.TimeDealCreateRequest;
 import com.msa.entry.dto.TimeDealResponse;
 import com.msa.entry.dto.TimeDealUpdateRequest;
@@ -18,26 +19,26 @@ public class TimeDealController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<TimeDealResponse> createTimeDeal(@RequestBody TimeDealCreateRequest request) {
-        return ResponseEntity.ok(timeDealService.createTimeDeal(request));
+    public ApiResponse<TimeDealResponse> createTimeDeal(@RequestBody TimeDealCreateRequest request) {
+        return ApiResponse.success(timeDealService.createTimeDeal(request));
     }
 
     @GetMapping("/{timeDealId}")
-    public ResponseEntity<TimeDealResponse> getTimeDeal(@PathVariable("timeDealId") Long timeDealId){
-        return ResponseEntity.ok(timeDealService.getTimeDeal(timeDealId));
+    public ApiResponse<TimeDealResponse> getTimeDeal(@PathVariable("timeDealId") Long timeDealId){
+        return ApiResponse.success(timeDealService.getTimeDeal(timeDealId));
     }
 
     @PutMapping("/{timeDealId}")
-    public ResponseEntity<TimeDealResponse> updateTimeDeal(@PathVariable("timeDealId") Long timeDealId, @RequestBody TimeDealUpdateRequest request){
+    public ApiResponse<TimeDealResponse> updateTimeDeal(@PathVariable("timeDealId") Long timeDealId, @RequestBody TimeDealUpdateRequest request){
 
-        return ResponseEntity.ok(timeDealService.updateTimeDeal(timeDealId,request));
+        return ApiResponse.success(timeDealService.updateTimeDeal(timeDealId,request));
     }
 
     @DeleteMapping("/{timeDealId}")
-    public ResponseEntity<Void> deleteTimeDeal(@PathVariable("timeDealId") Long timeDealId){
+    public ApiResponse<Void> deleteTimeDeal(@PathVariable("timeDealId") Long timeDealId){
         timeDealService.deleteTimeDeal(timeDealId);
 
-        return ResponseEntity.ok().build();
+        return ApiResponse.success();
     }
 
 }
