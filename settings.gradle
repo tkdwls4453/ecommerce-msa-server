@@ -7,4 +7,5 @@ include 'payment-service'
 include 'eureka-server'
 include 'gateway-server'
 include 'jwt'
+include 'coupon-service'
 
