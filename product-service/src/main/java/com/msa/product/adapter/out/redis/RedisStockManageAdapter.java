@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.cache.CacheProperties.Redis;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ public class RedisStockManageAdapter implements ShoesRedisStockManagePort {
     private final RedisTemplate<String, Integer> redisTemplate;
     private final ShoesQueryPort shoesQueryPort;
     private final RedisScript<Long> decreaseStockScript;
+    private final RedisScript<Long> increaseStockScript;
 
     @Override
     public void decreaseStock(List<OrderItem> orderLine) {
@@ -32,8 +34,37 @@ public class RedisStockManageAdapter implements ShoesRedisStockManagePort {
         decreaseFromRedis(orderLine);
 
         // TODO: 변경 내용 데이터베이스에 동기화 (비동기 처리)
-
     }
+
+    @Override
+    public void rollbackStock(List<OrderItem> orderLine) {
+        // 만약 레디스에 존재하지 않는 상품이 있으면 레디스에 먼저 로드하기
+        fetchAndCacheStock(orderLine);
+
+        // 레디스에 재고 복구 (원자적으로 처리)
+        rollbackFromRedis(orderLine);
+
+        // TODO: 변경 내용 데이터베이스에 동기화 (비동기 처리)
+    }
+
+    private void rollbackFromRedis(List<OrderItem> orderLine) {
+        List<String> keys = new ArrayList<>();
+        List<Integer> args = new ArrayList<>();
+
+        for (OrderItem orderItem : orderLine) {
+            keys.add("stock:" + orderItem.itemId());
+            args.add(orderItem.quantity());
+        }
+
+        log.info("[RedisStockManageAdapter.rollbackFromRedis]: keys: {}, args: {}", keys, args);
+
+        Long result = redisTemplate.execute(
+            increaseStockScript,
+            keys,
+            args.toArray()
+        );
+    }
+
 
     private void decreaseFromRedis(List<OrderItem> orderLine) {
         List<String> keys = new ArrayList<>();
@@ -66,8 +97,5 @@ public class RedisStockManageAdapter implements ShoesRedisStockManagePort {
         }
     }
 
-    @Override
-    public void rollbackStock(List<OrderItem> orderLine) {
 
-    }
 }

@@ -22,6 +22,6 @@ public class ShoesRedisStockManageService implements ProductRedisStockUseCase {
 
     @Override
     public void rollbackStock(RollbackStockCommand command) {
-
+        shoesRedisStockManagePort.rollbackStock(command.orderLine());
     }
 }

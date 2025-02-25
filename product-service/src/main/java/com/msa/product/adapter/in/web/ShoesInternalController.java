@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/products")
 public class ShoesInternalController {
 //    private final ProductStockUseCase productStockUseCase;
-    private final ProductRedisStockUseCase productRedisStockUseCase;
+    private final ProductRedisStockUseCase productStockUseCase;
 
     @PostMapping("/stock/decrease")
     ApiResponse<Void> decreaseStock(
         @Valid @RequestBody DecreaseStockRequest request
     ){
-        productRedisStockUseCase.decreaseStock(DecreaseStockCommand.from(request));
+        productStockUseCase.decreaseStock(DecreaseStockCommand.from(request));
         return ApiResponse.success();
     }
 
@@ -33,7 +33,7 @@ public class ShoesInternalController {
     ApiResponse<Void> rollbackStock(
         @Valid @RequestBody RollbackStockRequest request
     ){
-        productRedisStockUseCase.rollbackStock(RollbackStockCommand.from(request));
+        productStockUseCase.rollbackStock(RollbackStockCommand.from(request));
         return ApiResponse.success();
     }
 }
