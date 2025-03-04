@@ -4,6 +4,7 @@ import com.msa.common.response.ApiResponse;
 import com.msa.product.adapter.in.web.dto.DecreaseStockRequest;
 import com.msa.product.adapter.in.web.dto.RollbackStockRequest;
 import com.msa.product.application.port.in.DecreaseStockCommand;
+import com.msa.product.application.port.in.ProductRedisStockUseCase;
 import com.msa.product.application.port.in.ProductStockUseCase;
 import com.msa.product.application.port.in.RollbackStockCommand;
 import jakarta.validation.Valid;
@@ -17,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/internal/products")
 public class ShoesInternalController {
-    private final ProductStockUseCase productStockUseCase;
+//    private final ProductStockUseCase productStockUseCase;
+    private final ProductRedisStockUseCase productStockUseCase;
 
     @PostMapping("/stock/decrease")
     ApiResponse<Void> decreaseStock(

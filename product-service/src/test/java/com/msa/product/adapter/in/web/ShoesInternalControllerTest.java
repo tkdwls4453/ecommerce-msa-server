@@ -13,6 +13,7 @@ import com.msa.product.adapter.in.web.dto.DecreaseStockRequest;
 import com.msa.product.adapter.in.web.dto.RollbackStockRequest;
 import com.msa.product.application.port.in.DecreaseStockCommand;
 import com.msa.product.application.port.in.OrderItem;
+import com.msa.product.application.port.in.ProductRedisStockUseCase;
 import com.msa.product.application.port.in.ProductStockUseCase;
 import com.msa.product.application.port.in.RollbackStockCommand;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ class ShoesInternalControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private ProductStockUseCase productStockUseCase;
+    private ProductRedisStockUseCase productStockUseCase;
 
     @Nested
     @DisplayName("POST /internal/products/stock/decrease")

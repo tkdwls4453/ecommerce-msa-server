@@ -7,3 +7,10 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://admin:1234@${EUREKA_SERVER_HOST:localhost}:8761/eureka
+grpc:
+  client:
+    grpc-server:
+      address: static://${PRODUCT_SERVER_HOST:localhost}:5043
+      enable-keep-alive: true
+      keep-alive-without-calls: true
+      negotiation-type: plaintext
