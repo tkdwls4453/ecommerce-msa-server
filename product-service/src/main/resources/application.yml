@@ -8,8 +8,10 @@ spring:
       mode: always
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
-      port: 6379
+      sentinel:
+        master: mymaster
+        nodes:
+          - redis-sentinel:26379
 
 grpc:
   server:

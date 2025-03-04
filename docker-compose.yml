@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   mysql:
     image: mysql:8.0
@@ -17,13 +18,42 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
 
-  redis:
+  redis-master:
     image: redis:latest
-    container_name: redis
+    container_name: redis-master
     networks:
       - msa_network
     ports:
       - "6379:6379"
+    volumes:
+      - ./redis/master/redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+
+  redis-replica:
+    image: redis:latest
+    container_name: redis-replica
+    networks:
+       - msa_network
+    depends_on:
+      - redis-master
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./redis/replica/redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+
+  redis-sentinel:
+    image: redis:latest
+    container_name: redis-sentinel
+    networks:
+      - msa_network
+    depends_on:
+      - redis-master
+    ports:
+      - "26379:26379"
+    volumes:
+      - ./redis/sentinel/sentinel.conf:/usr/local/etc/redis/sentinel.conf
+    command: ["redis-sentinel", "/usr/local/etc/redis/sentinel.conf"]
 
   eureka-server:
     image: ecommerce-msa-server-eureka-server:0.0.1
@@ -113,7 +143,7 @@ services:
       - "5043:5043"
     depends_on:
       - mysql
-      - redis
+      - redis-sentinel
       - eureka-server
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/ecommerce?useSSL=false&allowPublicKeyRetrieval=true
@@ -122,7 +152,7 @@ services:
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=none
       - EUREKA_SERVER_HOST=eureka-server
-      - REDIS_HOST=redis
+      - REDIS_SENTINEL_HOST=redis-sentinel
       - SPRING_JPA_SHOW_SQL=true
       - SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL=true
       - LOGGING_LEVEL_ORG_HIBERNATE_SQL=DEBUG
