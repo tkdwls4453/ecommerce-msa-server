@@ -10,11 +10,13 @@ import com.msa.order.domain.vo.OrderItem;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Slf4j
+@Qualifier("productFeignAdapter")
 @RequiredArgsConstructor
-@Component
+//@Component
 public class ProductFeignAdapter implements ProductStockManagePort {
 
     private final ProductFeignClient productFeignClient;
