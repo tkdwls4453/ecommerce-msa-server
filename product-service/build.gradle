@@ -120,7 +120,8 @@ jacocoTestReport {
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, excludes: [
-					'**/ProductApplication.class'
+					'**/ProductApplication.class',
+					'/product/**'
 			])
 		}))
 	}
@@ -139,7 +140,7 @@ jacocoTestCoverageVerification {
 				classDirectories.setFrom(files(classDirectories.files.collect {
 					fileTree(dir: it, excludes: [
 							'**/ProductApplication.class',
-							'**/product/**'
+							'/product/**'
 					])
 				}))
 			}
