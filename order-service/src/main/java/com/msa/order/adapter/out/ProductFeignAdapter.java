@@ -1,6 +1,6 @@
 package com.msa.order.adapter.out;
 
-import com.msa.common.exception.FeignClientException;
+import com.msa.common.exception.ExternalRequestException;
 import com.msa.common.response.ApiResponse;
 import com.msa.order.adapter.out.feign.DecreaseStockRequest;
 import com.msa.order.adapter.out.feign.ProductFeignClient;
@@ -10,11 +10,12 @@ import com.msa.order.domain.vo.OrderItem;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @Slf4j
+@Qualifier("productFeignAdapter")
 @RequiredArgsConstructor
-@Component
+//@Component
 public class ProductFeignAdapter implements ProductStockManagePort {
 
     private final ProductFeignClient productFeignClient;
@@ -29,7 +30,7 @@ public class ProductFeignAdapter implements ProductStockManagePort {
             ApiResponse<Void> response = productFeignClient.decreaseStock(request);
             log.info("[ProductFeignAdapter.decreaseStock] response: {}", response);
         }catch (Exception e){
-            throw new FeignClientException(e.getMessage());
+            throw new ExternalRequestException(e.getMessage());
         }
 
 

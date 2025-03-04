@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package product;
+
+service StockService{
+  rpc DecreaseStock(DecreaseStockRequest) returns (StockResponse){}
+  rpc RollbackStock(RollbackStockRequest) returns (StockResponse){}
+}
+
+message DecreaseStockRequest{
+ repeated OrderItem orderLine = 1;
+}
+
+message RollbackStockRequest{
+  repeated OrderItem orderLine = 1;
+}
+
+message OrderItem{
+  int32 idx = 1;
+  int64 itemId = 2;
+  string itemName = 3;
+  int32 quantity = 4;
+  int32 price = 5;
+}
+
+message StockResponse{
+  string message = 1;
+}

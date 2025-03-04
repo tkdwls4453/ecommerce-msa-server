@@ -84,6 +84,7 @@ services:
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
       - EUREKA_SERVER_HOST=eureka-server
+      - PRODUCT_SERVER_HOST=product-service
 
 
   payment-service:
@@ -109,6 +110,7 @@ services:
       - msa_network
     ports:
       - "8084:8080"
+      - "5043:5043"
     depends_on:
       - mysql
       - redis
