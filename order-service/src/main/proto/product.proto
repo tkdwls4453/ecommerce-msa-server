@@ -5,12 +5,12 @@ import "google/protobuf/timestamp.proto";
 package product;
 
 service StockService{
-  rpc DecreaseStock(DecreaseStockRequest) returns (EmptyResponse){}
-  rpc RollbackStock(RollbackStockRequest) returns (EmptyResponse){}
+  rpc DecreaseStock(DecreaseStockRequest) returns (StockResponse){}
+  rpc RollbackStock(RollbackStockRequest) returns (StockResponse){}
 }
 
 message DecreaseStockRequest{
- repeated OrderItem orderLine = 1;
+  repeated OrderItem orderLine = 1;
 }
 
 message RollbackStockRequest{
@@ -25,5 +25,6 @@ message OrderItem{
   int32 price = 5;
 }
 
-message EmptyResponse{
+message StockResponse{
+  string message = 1;
 }

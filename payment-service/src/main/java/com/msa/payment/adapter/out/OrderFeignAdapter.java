@@ -1,6 +1,6 @@
 package com.msa.payment.adapter.out;
 
-import com.msa.common.exception.FeignClientException;
+import com.msa.common.exception.ExternalRequestException;
 import com.msa.common.response.ApiResponse;
 import com.msa.payment.adapter.out.feign.OrderFeignClient;
 import com.msa.payment.application.port.out.OrderCommandPort;
@@ -24,7 +24,7 @@ public class OrderFeignAdapter implements OrderQueryPort, OrderCommandPort {
         try{
              response = orderFeignClient.getSimpleOrderById(orderId);
         }catch (Exception e){
-            throw new FeignClientException(e.getMessage());
+            throw new ExternalRequestException(e.getMessage());
         }
 
         log.info("데이터: {}",response);

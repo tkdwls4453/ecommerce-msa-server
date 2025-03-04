@@ -51,8 +51,8 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error());
     }
 
-    @ExceptionHandler(value = FeignClientException.class)
-    public ResponseEntity<ApiResponse<Void>> handleRuntimeException(FeignClientException e) {
+    @ExceptionHandler(value = ExternalRequestException.class)
+    public ResponseEntity<ApiResponse<Void>> handleRuntimeException(ExternalRequestException e) {
 
         log.info("Feign Error: Message = {}", e.getMessage());
         loggingStackTrace(e);

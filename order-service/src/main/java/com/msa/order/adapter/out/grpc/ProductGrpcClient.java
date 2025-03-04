@@ -1,12 +1,13 @@
 package com.msa.order.adapter.out.grpc;
 
+import com.msa.common.exception.ExternalRequestException;
 import com.msa.order.domain.vo.OrderItem;
 import java.util.ArrayList;
 import java.util.List;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 import product.Product;
-import product.Product.EmptyResponse;
+import product.Product.StockResponse;
 import product.StockServiceGrpc;
 
 @Service
@@ -29,7 +30,11 @@ public class ProductGrpcClient {
             .addAllOrderLine(grpcOrderLine)
             .build();
 
-        EmptyResponse emptyResponse = this.stockServiceBlockingStub.decreaseStock(grpcRequest);
+        StockResponse response = this.stockServiceBlockingStub.decreaseStock(grpcRequest);
+
+        if (!response.getMessage().equals("success")) {
+            throw new ExternalRequestException(response.getMessage());
+        }
     }
 
     public void rollbackStock(List<OrderItem> orderLine){
@@ -46,6 +51,9 @@ public class ProductGrpcClient {
             .addAllOrderLine(grpcOrderLine)
             .build();
 
-        EmptyResponse emptyResponse = this.stockServiceBlockingStub.rollbackStock(grpcRequest);
+        StockResponse response = this.stockServiceBlockingStub.rollbackStock(grpcRequest);
+        if (!response.getMessage().equals("success")) {
+            throw new ExternalRequestException(response.getMessage());
+        }
     }
 }
