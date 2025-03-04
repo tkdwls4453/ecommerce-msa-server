@@ -17,6 +17,14 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    networks:
+      - msa_network
+    ports:
+      - "6379:6379"
+
   eureka-server:
     image: ecommerce-msa-server-eureka-server:0.0.1
     networks:
@@ -75,8 +83,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
-      - SPRING_JWT_SECRET=dudguswntjdtkdwlsdbstjrahenahencnldjqtjdrhd
       - EUREKA_SERVER_HOST=eureka-server
+      - PRODUCT_SERVER_HOST=product-service
 
 
   payment-service:
@@ -87,14 +95,38 @@ services:
       - "8083:8080"
     depends_on:
       - mysql
+      - eureka-server
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/ecommerce?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=mysqluser
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
-      - SPRING_JWT_SECRET=dudguswntjdtkdwlsdbstjrahenahencnldjqtjdrhd
       - EUREKA_SERVER_HOST=eureka-server
+
+  product-service:
+    image: ecommerce-msa-server-product-service:0.0.1
+    networks:
+      - msa_network
+    ports:
+      - "8084:8080"
+      - "5043:5043"
+    depends_on:
+      - mysql
+      - redis
+      - eureka-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/ecommerce?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=mysqluser
+      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL8Dialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+      - EUREKA_SERVER_HOST=eureka-server
+      - REDIS_HOST=redis
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL=true
+      - LOGGING_LEVEL_ORG_HIBERNATE_SQL=DEBUG
+      - LOGGING_LEVEL_ORG_HIBERNATE_TYPE_DESCRIPTOR_SQL_BASICBINDER=TRACE
 networks:
   msa_network:
     driver: bridge

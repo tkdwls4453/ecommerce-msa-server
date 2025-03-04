@@ -58,6 +58,9 @@ public class PaymentService implements PaymentCommandUseCase {
 
         if(response.status().equals("FAIL")){
             payment.fail(response.failMessage());
+
+            // TODO: 결제 실패 후, 10분 이상 결제 완료로 넘어가지 못하면 재고를 복구하는 로직을 추가해야 한다.
+
         }else{
             payment.confirm(response.method(), response.approvedAt());
 

@@ -1,3 +1,23 @@
 spring:
   application:
-    name: product
+    name: product-service
+  jpa:
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
+
+grpc:
+  server:
+    port: 5043
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://admin:1234@${EUREKA_SERVER_HOST:localhost}:8761/eureka

@@ -6,9 +6,11 @@ import com.msa.order.adapter.in.web.dto.CreateNewOrderRequest;
 import com.msa.order.application.port.in.CreateNewOrderCommand;
 import com.msa.order.domain.vo.AppliedCoupon;
 import com.msa.order.exception.InvalidCouponTypeException;
+import com.msa.order.exception.InvalidOrderStatusException;
 import com.msa.order.exception.InvalidTotalPriceException;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -197,8 +199,37 @@ class OrderTest {
             })
                 .isInstanceOf(InvalidTotalPriceException.class);
         }
+    }
 
+    @Nested
+    @DisplayName("주문 준비 테스트")
+    class PrepareOrder{
+        @Test
+        @DisplayName("주문 상태를 준비중으로 변경합니다.")
+        void test2000(){
+            // Given
+            Order order = OrderFixtures.order(1L, OrderStatus.PAYMENT_PENDING, LocalDateTime.now());
 
+            // When
+            order.prepare();
+
+            // Then
+            assertThat(order).isNotNull();
+            assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.PREPARING);
+        }
+
+        @Test
+        @DisplayName("주문 상태가 결제대기가 아니라면 예외를 반환한다.")
+        void test1(){
+            // Given
+            Order order = OrderFixtures.order(1L, OrderStatus.ORDER_RECEIVED, LocalDateTime.now());
+
+            // When
+            assertThatThrownBy(order::prepare)
+                .isInstanceOf(InvalidOrderStatusException.class)
+            ;
+
+        }
     }
 
 }

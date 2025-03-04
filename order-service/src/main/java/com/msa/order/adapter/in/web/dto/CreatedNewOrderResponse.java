@@ -4,6 +4,7 @@ import com.msa.common.vo.Money;
 import com.msa.order.domain.Order;
 import com.msa.order.domain.vo.OrderItem;
 import com.msa.order.domain.vo.ShippingInfo;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 
@@ -14,7 +15,8 @@ public record CreatedNewOrderResponse(
     String orderStatus,
     List<OrderItem> orderLine,
     ShippingInfo shippingInfo,
-    Money totalPrice
+    Integer totalPrice,
+    String orderTime
 ) {
 
     public static CreatedNewOrderResponse from(Order newOrder) {
@@ -24,7 +26,8 @@ public record CreatedNewOrderResponse(
             .orderStatus(newOrder.getOrderStatus().toString())
             .orderLine(newOrder.getOrderLine())
             .shippingInfo(newOrder.getShippingInfo())
-            .totalPrice(new Money(newOrder.getTotalPrice().amount()))
+            .totalPrice(newOrder.getTotalPrice().amount().intValue())
+            .orderTime(newOrder.getOrderTime().toString())
             .build();
     }
 

@@ -6,6 +6,7 @@ import com.msa.common.vo.Money;
 import com.msa.order.domain.vo.OrderItem;
 import com.msa.order.domain.vo.ShippingInfo;
 import com.msa.order.exception.InvalidCouponTypeException;
+import com.msa.order.exception.InvalidOrderStatusException;
 import com.msa.order.exception.InvalidTotalPriceException;
 import com.msa.order.exception.NoOrderItemException;
 import java.time.LocalDateTime;
@@ -100,5 +101,12 @@ public class Order {
 
     public void fail() {
         this.orderStatus = OrderStatus.FAILED;
+    }
+
+    public void prepare() {
+        if(this.orderStatus != OrderStatus.PAYMENT_PENDING) {
+            throw new InvalidOrderStatusException();
+        }
+        this.orderStatus = OrderStatus.PREPARING;
     }
 }
