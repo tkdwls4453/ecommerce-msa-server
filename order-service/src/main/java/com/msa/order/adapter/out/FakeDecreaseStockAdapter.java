@@ -3,7 +3,6 @@ package com.msa.order.adapter.out;
 import com.msa.order.application.port.out.ProductStockManagePort;
 import com.msa.order.domain.vo.OrderItem;
 import java.util.List;
-import org.springframework.stereotype.Component;
 
 public class FakeDecreaseStockAdapter implements ProductStockManagePort {
 

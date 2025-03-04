@@ -5,7 +5,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.msa.common.exception.FeignClientException;
+import com.msa.common.exception.ExternalRequestException;
 import com.msa.common.response.ApiResponse;
 import com.msa.payment.adapter.out.feign.OrderFeignClient;
 import com.msa.payment.application.port.out.dto.SimpleOrderResponse;
@@ -67,7 +67,7 @@ class OrderFeignAdapterTest {
 
             // When Then
             assertThatThrownBy(() -> sut.findSimpleOrderByOrderId(orderId))
-                .isInstanceOf(FeignClientException.class);
+                .isInstanceOf(ExternalRequestException.class);
 
             verify(orderFeignClient, times(1)).getSimpleOrderById(orderId);
         }

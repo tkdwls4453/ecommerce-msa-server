@@ -2,6 +2,7 @@ package com.msa.common.utils;
 
 import static org.assertj.core.api.Assertions.*;
 
+import com.msa.jwt.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import org.junit.jupiter.api.BeforeEach;
