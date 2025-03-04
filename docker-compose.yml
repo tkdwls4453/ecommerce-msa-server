@@ -109,6 +109,7 @@ services:
       - msa_network
     ports:
       - "8084:8080"
+      - "5043:5043"
     depends_on:
       - mysql
       - redis
