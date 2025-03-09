@@ -48,7 +48,7 @@ class TimeDealServiceTest {
                 .quantity(request.getQuantity())
                 .build();
 
-        when(modelRepository.existsById(any(Long.class))).thenReturn(true);  // Mock 동작 추가
+        when(modelRepository.existsById(any(Long.class))).thenReturn(true);
         when(timeDealRepository.save(any(TimeDeal.class))).thenReturn(timeDeal);
 
         // when

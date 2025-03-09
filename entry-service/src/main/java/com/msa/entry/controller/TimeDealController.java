@@ -5,11 +5,14 @@ import com.msa.entry.dto.TimeDealCreateRequest;
 import com.msa.entry.dto.TimeDealResponse;
 import com.msa.entry.dto.TimeDealUpdateRequest;
 import com.msa.entry.service.TimeDealService;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.logging.Logger;
+
 @RestController
-@RequestMapping("/entry")
+@Slf4j
+@RequestMapping("/timedeal")
 public class TimeDealController {
 
     private final TimeDealService timeDealService;
@@ -20,6 +23,7 @@ public class TimeDealController {
 
     @PostMapping("/create")
     public ApiResponse<TimeDealResponse> createTimeDeal(@RequestBody TimeDealCreateRequest request) {
+        log.info("시간 = "+request.getStartTime());
         return ApiResponse.success(timeDealService.createTimeDeal(request));
     }
 

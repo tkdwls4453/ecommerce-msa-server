@@ -6,6 +6,7 @@ import com.msa.entry.dto.TimeDealUpdateRequest;
 import com.msa.entry.entity.TimeDeal;
 import com.msa.entry.repository.ModelRepository;
 import com.msa.entry.repository.TimeDealRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,9 +25,8 @@ public class TimeDealService {
     public TimeDealResponse createTimeDeal(TimeDealCreateRequest request){
 
         if (!modelRepository.existsById(request.getModelId())){
-            throw new RuntimeException("존재하지 않는 모델");
+            throw new EntityNotFoundException("존재하지 않는 모델");
         }
-
         TimeDeal timeDeal = TimeDeal.builder()
                 .modelId(request.getModelId())
                 .startTime(request.getStartTime())
@@ -50,7 +50,7 @@ public class TimeDealService {
     public TimeDealResponse getTimeDeal(Long timeDealId){
 
         TimeDeal timeDeal = timeDealRepository.findById(timeDealId)
-                .orElseThrow(()->new RuntimeException("존재하지 않는 타임딜"));
+                .orElseThrow(()->new EntityNotFoundException("존재하지 않는 타임딜"));
 
         return TimeDealResponse.builder()
                 .timeDealId(timeDeal.getTimeDealId())
@@ -66,7 +66,7 @@ public class TimeDealService {
     public TimeDealResponse updateTimeDeal(Long timeDealId, TimeDealUpdateRequest request){
 
         TimeDeal timeDeal = timeDealRepository.findById(timeDealId)
-                .orElseThrow(()->new RuntimeException("없는 응모"));
+                .orElseThrow(()->new EntityNotFoundException("없는 응모"));
 
         timeDeal.update(request.getStartTime(),request.getEndTime(), request.getQuantity());
 
@@ -84,7 +84,7 @@ public class TimeDealService {
     public void deleteTimeDeal(Long timeDealId){
 
         TimeDeal timeDeal = timeDealRepository.findById(timeDealId)
-                .orElseThrow(()-> new RuntimeException("없는 응모"));
+                .orElseThrow(()-> new EntityNotFoundException("없는 응모"));
 
         timeDealRepository.delete(timeDeal);
     }
@@ -93,7 +93,7 @@ public class TimeDealService {
     public TimeDealResponse startTimeDeal(Long timeDealId){
 
         TimeDeal timeDeal = timeDealRepository.findById(timeDealId)
-                .orElseThrow(()-> new RuntimeException("없는 응모"));
+                .orElseThrow(()-> new EntityNotFoundException("없는 응모"));
 
         timeDeal.start();
 
@@ -111,7 +111,7 @@ public class TimeDealService {
     public TimeDealResponse endTimeDeal(Long timeDealId){
 
         TimeDeal timeDeal = timeDealRepository.findById(timeDealId)
-                .orElseThrow(()-> new RuntimeException("없는 응모"));
+                .orElseThrow(()-> new EntityNotFoundException("없는 응모"));
 
         timeDeal.end();
 

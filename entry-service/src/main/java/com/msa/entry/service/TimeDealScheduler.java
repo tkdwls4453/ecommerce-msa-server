@@ -1,4 +1,4 @@
-package com.msa.entry.scheduler;
+package com.msa.entry.service;
 
 import com.msa.entry.entity.TimeDeal;
 import com.msa.entry.entity.TimeDealStatus;
@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,5 +1,9 @@
 package com.msa.entry.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,8 +21,12 @@ public class TimeDeal {
     @Column(nullable = false)
     private Long modelId;
     @Column(nullable = false)
+//    @JsonSerialize(using = LocalDateTimeSerializer.class)
+//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime startTime;
     @Column(nullable = false)
+//    @JsonSerialize(using = LocalDateTimeSerializer.class)
+//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime endTime;
     @Column(nullable = false)
     private int quantity;
@@ -46,16 +54,17 @@ public class TimeDeal {
     }
 
     public void start() {
-        if (this.timeDealStatus != timeDealStatus.SCHEDULED){
+        if (this.timeDealStatus != TimeDealStatus.SCHEDULED){
             throw new IllegalStateException("이미 시작되었거나 종료된 타임딜");
         }
         this.timeDealStatus = TimeDealStatus.ACTIVE;
     }
 
     public void end(){
-        if (this.timeDealStatus != timeDealStatus.ACTIVE){
+        if (this.timeDealStatus != TimeDealStatus.ACTIVE){
             throw new IllegalStateException("진행중인 타임딜만 종료 가능");
         }
         this.timeDealStatus = TimeDealStatus.ENDED;
     }
+
 }

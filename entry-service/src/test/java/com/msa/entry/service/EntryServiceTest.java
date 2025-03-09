@@ -1,5 +1,7 @@
 package com.msa.entry.service;
 
+import com.msa.entry.dto.EntryRequest;
+import com.msa.entry.dto.EntryResponse;
 import com.msa.entry.entity.Entry;
 import com.msa.entry.entity.EntryStatus;
 import com.msa.entry.entity.TimeDeal;
@@ -21,7 +23,6 @@ import static org.assertj.core.api.Assertions.*;
 //import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-
 @ExtendWith(MockitoExtension.class)
 class EntryServiceTest {
     @InjectMocks
@@ -39,6 +40,11 @@ class EntryServiceTest {
         // given
         Long timeDealId = 1L;
         Long userId = 1L;
+        EntryRequest request = EntryRequest.builder()
+                .timeDealId(timeDealId)
+                .userId(userId)
+                .build();
+
         TimeDeal timeDeal = TimeDeal.builder()
                 .modelId(1L)
                 .startTime(LocalDateTime.now().minusHours(1))
@@ -58,7 +64,7 @@ class EntryServiceTest {
         when(entryRepository.save(any(Entry.class))).thenReturn(entry);
 
         // when
-        EntryResponse response = entryService.applyEntry(timeDealId, userId);
+        EntryResponse response = entryService.applyEntry(request);
 
         // then
         assertThat(response).isNotNull();
@@ -73,6 +79,11 @@ class EntryServiceTest {
         // given
         Long timeDealId = 1L;
         Long userId = 1L;
+        EntryRequest request = EntryRequest.builder()
+                .timeDealId(timeDealId)
+                .userId(userId)
+                .build();
+
         TimeDeal timeDeal = TimeDeal.builder()
                 .modelId(1L)
                 .startTime(LocalDateTime.now().minusHours(1))
@@ -85,7 +96,7 @@ class EntryServiceTest {
         when(entryRepository.existsByTimeDealAndUserId(timeDeal, userId)).thenReturn(true);
 
         // when & then
-        assertThatThrownBy(() -> entryService.applyEntry(timeDealId, userId))
+        assertThatThrownBy(() -> entryService.applyEntry(request))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("이미 응모한 타임딜입니다");
     }
@@ -118,7 +129,7 @@ class EntryServiceTest {
 
         // then
         assertThat(winners).hasSize(2);  // 당첨자 수 확인
-        assertThat(winners).allMatch(w -> w.getEntryStatus().equals(EntryStatus.WIN));
+        assertThat(winners.stream().allMatch(w -> w.getEntryStatus().equals(EntryStatus.WIN))).isTrue();
         verify(entryRepository).saveAll(anyList());
     }
 
