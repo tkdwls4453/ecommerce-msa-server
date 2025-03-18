@@ -1,9 +1,5 @@
 package com.msa.entry.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.msa.entry.entity.Entry;
 import com.msa.entry.entity.EntryStatus;
 import lombok.Builder;
@@ -17,8 +13,6 @@ public class EntryResponse {
     private Long entryId;
     private Long userId;
     private Long timeDealId;
-//    @JsonSerialize(using = LocalDateTimeSerializer.class)
-//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime entryTime;
     private int entryNumber;
     private EntryStatus entryStatus;

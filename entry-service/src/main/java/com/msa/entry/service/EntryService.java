@@ -46,10 +46,11 @@ public class EntryService {
 
         if(entryRepository.countByTimeDeal(timeDeal) == 0) {
             maxEntryNumber = 0;
-        }else {
-            maxEntryNumber = entryRepository.findMaxEntryNumberByTimeDeal(timeDeal);
+        } else {
+            Entry maxEntry = entryRepository.findTopByTimeDealOrderByEntryNumberDesc(timeDeal);
+            maxEntryNumber = (maxEntry != null) ? maxEntry.getEntryNumber() : 0;
         }
-        int newEntryNumber = maxEntryNumber +1 ;
+        int newEntryNumber = maxEntryNumber + 1;
 
         Entry entry = Entry.builder()
                 .timeDeal(timeDeal)

@@ -30,6 +30,7 @@ public class JacksonConfig {
         // BigDecimal 값을 직렬화할 때 지수 표기법 대신 일반 숫자 형식 사용
         objectMapper.enable(SerializationFeature.WRITE_BIGDECIMAL_AS_PLAIN);
 
+        // LocalDateTime
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 

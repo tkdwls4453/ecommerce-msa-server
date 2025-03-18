@@ -10,6 +10,7 @@ public interface EntryRepository extends JpaRepository<Entry, Long> {
 
     boolean existsByTimeDealAndUserId(TimeDeal timeDeal, Long userId);
     int countByTimeDeal(TimeDeal timeDeal);
-    int findMaxEntryNumberByTimeDeal(TimeDeal timeDeal);
+    Integer findMaxEntryNumberByTimeDeal(TimeDeal timeDeal);
     List<Entry> findByTimeDeal(TimeDeal timeDeal);
+    Entry findTopByTimeDealOrderByEntryNumberDesc(TimeDeal timeDeal);
 }
